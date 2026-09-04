@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>国家会展中心 · 场馆地图</title>
+  <link rel="stylesheet" href="./campus-3f.css" />
+  <link rel="stylesheet" href="./campus-all.css?v=20260904-14" />
+</head>
+<body>
+  <main class="map-shell">
+    <header class="map-header">
+      <div>
+        <span class="eyebrow">NECC · VENUE MAP</span>
+        <h1>国家会展中心 · 场馆地图</h1>
+        <p id="mapStatus">正在识别两个楼层的门和设施…</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="fitButton">双层全景</button>
+        <button type="button" id="clearRouteButton" class="primary">退出导航</button>
+      </div>
+    </header>
+
+    <section class="map-stage" id="mapStage" aria-label="F1和F3多层三维导航地图">
+      <canvas id="mapCanvas" tabindex="0" aria-label="可拖动、旋转和缩放的F1、F3多层场馆地图"></canvas>
+      <div class="hall-labels" id="hallLabels" aria-label="场馆与设施标记"></div>
+      <div class="loading" id="loading">正在生成 F1 + F3…</div>
+
+      <aside class="floor-card multi-floor-card">
+        <strong id="viewCode">F1+F3</strong>
+        <span id="viewName">F1 + F3 场馆总览</span>
+        <small id="viewHint">楼层间距为示意距离</small>
+        <div class="floor-switch" aria-label="切换楼层">
+          <a class="active" data-view="ALL" href="./campus-all.html?view=ALL">双层</a>
+          <a data-view="F1" href="./campus-all.html?view=F1">F1</a>
+          <a data-view="F3" href="./campus-all.html?view=F3">F3</a>
+        </div>
+      </aside>
+
+      <aside class="navigation-panel" aria-label="路线规划">
+        <div class="panel-title">
+          <div><small>室内导航</small><strong>规划路线</strong></div>
+          <span class="route-state" id="routeState" aria-live="polite">未开始</span>
+        </div>
+        <label>
+          <span>起点</span>
+          <select id="startSelect" aria-label="导航起点"></select>
+        </label>
+        <label>
+          <span>终点</span>
+          <select id="destinationSelect" aria-label="导航终点"></select>
+        </label>
+        <fieldset>
+          <legend>路线偏好</legend>
+          <div class="preference-grid">
+            <label><input type="radio" name="routePreference" value="default" checked><span>默认</span></label>
+            <label><input type="radio" name="routePreference" value="elevator"><span>优先电梯</span></label>
+            <label><input type="radio" name="routePreference" value="escalator"><span>优先扶梯</span></label>
+            <label><input type="radio" name="routePreference" value="stairs"><span>优先楼梯</span></label>
+          </div>
+        </fieldset>
+        <button type="button" id="routeButton" class="route-button">开始导航</button>
+        <div class="route-summary" id="routeSummary" aria-live="polite">默认起点：F1 · 1.1馆 · 1号门</div>
+      </aside>
+
+      <div class="legend-card">
+        <span><i class="floor-dot f3"></i>F3 展馆层</span>
+        <span><i class="floor-dot f1"></i>F1 展馆层</span>
+        <span><i class="route-dot"></i>当前路线</span>
+      </div>
+      <div class="gesture-hint">点击设施图标设为终点 · 左键平移 · 右键旋转 · 滚轮缩放</div>
+    </section>
+  </main>
+
+  <div id="svgSourceF1" class="svg-source" aria-hidden="true"></div>
+  <div id="svgSourceF3" class="svg-source" aria-hidden="true"></div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="./campus-all.js?v=20260904-14"></script>
+</body>
+</html>

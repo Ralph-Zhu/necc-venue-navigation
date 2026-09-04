@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#08111f" />
+  <title>国家会展中心 · 场馆编辑器原型</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <div class="brand-title">Venue Studio</div>
+          <div class="brand-subtitle">国家会展中心 · 数字场馆</div>
+        </div>
+      </div>
+
+      <div class="project-state">
+        <span class="status-dot"></span>
+        <span>1号建筑 · CAD实际线稿</span>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" id="undoBtn" title="撤销" aria-label="撤销">
+          <svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M5 12h8a6 6 0 0 1 6 6"/></svg>
+        </button>
+        <button class="secondary-button" id="exportBtn">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
+          导出方案
+        </button>
+        <button class="primary-button" id="publishBtn">
+          <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+          保存版本
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="left-panel panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">BUILDING 01</span>
+            <h1>1号建筑</h1>
+          </div>
+          <button class="icon-button small" title="更多" aria-label="更多">
+            <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+          </button>
+        </div>
+
+        <div class="floor-list" id="floorList">
+          <button class="floor-item active" data-floor="F1">
+            <span class="floor-index">F1</span><span><strong>1.1号馆</strong><small>首层展馆 · CAD已导入</small></span><i></i>
+          </button>
+          <button class="floor-item" data-floor="F2">
+            <span class="floor-index">F2</span><span><strong>公共夹层</strong><small>道路与小房间 · 预留</small></span><i></i>
+          </button>
+          <button class="floor-item" data-floor="F3">
+            <span class="floor-index">F3</span><span><strong>1.2号馆</strong><small>三层展馆 · CAD已导入</small></span><i></i>
+          </button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">固定底图图层</div>
+        <label class="layer-row"><span class="layer-icon cyan"></span><span>CAD墙体 / 幕墙</span><input type="checkbox" checked data-layer="shell"><i></i></label>
+        <label class="layer-row"><span class="layer-icon blue"></span><span>楼梯 / 扶梯线稿</span><input type="checkbox" checked data-layer="roads"><i></i></label>
+        <label class="layer-row"><span class="layer-icon purple"></span><span>电梯 / 扶梯</span><input type="checkbox" checked data-layer="vertical"><i></i></label>
+        <label class="layer-row"><span class="layer-icon green"></span><span>卫生间 / 服务点</span><input type="checkbox" checked data-layer="facilities"><i></i></label>
+
+        <div class="data-card">
+          <div class="data-card-top"><span>有效线稿范围</span><span class="tag">已排除图框</span></div>
+          <strong>276.2 × 125.1 m</strong>
+          <small>来自1.1与1.2号馆DXF；F2仅保留占位。</small>
+        </div>
+      </aside>
+
+      <section class="stage-wrap">
+        <div class="stage-toolbar panel">
+          <div class="view-toggle" role="tablist" aria-label="视图切换">
+            <button class="active" data-view="2d">2D 编辑</button>
+            <button data-view="3d">3D 预览</button>
+          </div>
+          <span class="toolbar-separator"></span>
+          <div class="tool-group" id="editorTools">
+            <button class="tool-button active" data-tool="select" title="选择">
+              <svg viewBox="0 0 24 24"><path d="m6 3 12 8-7 2-3 7z"/></svg><span>选择</span>
+            </button>
+            <button class="tool-button" data-tool="rect" title="画矩形展位">
+              <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/></svg><span>矩形</span>
+            </button>
+            <button class="tool-button" data-tool="polygon" title="画多边形展位">
+              <svg viewBox="0 0 24 24"><path d="m12 3 9 7-4 10H7L3 10z"/></svg><span>多边形</span>
+            </button>
+            <button class="tool-button" data-tool="route" title="设置道路">
+              <svg viewBox="0 0 24 24"><path d="M5 3v4c0 3 2 5 5 5h4c3 0 5 2 5 5v4M5 3l-2 3m2-3 2 3M19 21l-2-3m2 3 2-3"/></svg><span>道路</span>
+            </button>
+          </div>
+          <div class="stage-toolbar-right">
+            <button class="secondary-button compact" id="backgroundBtn">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 15l4-4 4 3 3-2 5 4"/></svg>
+              背景图
+            </button>
+            <input type="file" id="backgroundInput" accept="image/*" hidden />
+            <button class="secondary-button compact" id="excelBtn">
+              <svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7zM14 3v5h5M10 12l5 5m0-5-5 5"/></svg>
+              导入Excel
+            </button>
+            <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" hidden />
+          </div>
+        </div>
+
+        <div class="stage panel" id="stage">
+          <div class="stage-meta">
+            <div><span class="live-dot"></span><strong id="stageFloorName">F1 · 1.1号馆</strong><small id="stageHint">拖动画布或绘制展位</small></div>
+            <div class="mode-actions" id="modeActions">
+              <button class="chip active" data-camera="single">聚焦单层</button>
+              <button class="chip" data-camera="explode">楼层爆炸</button>
+            </div>
+          </div>
+
+          <div id="canvas2d" class="canvas-view active">
+            <svg id="mapSvg" viewBox="-12 -12 318 232" aria-label="场馆平面编辑器">
+              <defs>
+                <pattern id="gridSmall" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M 5 0 L 0 0 0 5" fill="none" stroke="rgba(148,163,184,.12)" stroke-width=".25"/></pattern>
+                <pattern id="gridLarge" width="25" height="25" patternUnits="userSpaceOnUse"><rect width="25" height="25" fill="url(#gridSmall)"/><path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(148,163,184,.18)" stroke-width=".35"/></pattern>
+                <filter id="boothGlow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <rect x="-12" y="-12" width="318" height="232" fill="url(#gridLarge)" />
+              <g id="backgroundLayer"></g>
+              <g id="shellLayer"></g>
+              <g id="roadLayer"></g>
+              <g id="roomLayer"></g>
+              <g id="boothLayer"></g>
+              <g id="routeLayer"></g>
+              <g id="facilityLayer"></g>
+              <g id="draftLayer"></g>
+            </svg>
+            <div class="scale-indicator"><span></span>25 m</div>
+            <div class="zoom-controls">
+              <button id="zoomIn" aria-label="放大">+</button><button id="zoomOut" aria-label="缩小">−</button><button id="zoomFit" aria-label="适配画布"><svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg></button>
+            </div>
+          </div>
+
+          <div id="canvas3d" class="canvas-view">
+            <canvas id="threeCanvas"></canvas>
+            <div class="canvas-message" id="threeMessage">
+              <div class="spinner"></div><span>正在生成3D场馆…</span>
+            </div>
+            <div class="three-legend">
+              <span><i class="legend-booth"></i>展位</span><span><i class="legend-road"></i>道路</span><span><i class="legend-route"></i>导航路线</span>
+            </div>
+            <div class="view-tip">拖动旋转 · 滚轮缩放 · 点击展位查看信息</div>
+          </div>
+
+          <div class="toast" id="toast" role="status"></div>
+        </div>
+      </section>
+
+      <aside class="right-panel panel">
+        <div class="inspector-empty" id="inspectorEmpty">
+          <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="m6 3 12 8-7 2-3 7z"/></svg></div>
+          <h2>选择一个展位</h2>
+          <p>点击平面图或3D模型中的展位，可以编辑编号、展商和样式。</p>
+        </div>
+
+        <div class="inspector-content hidden" id="inspectorContent">
+          <div class="panel-heading">
+            <div><span class="eyebrow">BOOTH</span><h2 id="inspectorTitle">A001</h2></div>
+            <button class="icon-button small danger" id="deleteBtn" title="删除展位"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6"/></svg></button>
+          </div>
+          <label class="field"><span>展位编号</span><input id="boothNumber" type="text" /></label>
+          <label class="field"><span>展商名称</span><input id="boothCompany" type="text" placeholder="输入展商名称" /></label>
+          <label class="field"><span>展位类型</span><select id="boothType"><option value="standard">标准展位</option><option value="special">特装展位</option><option value="service">公共服务</option></select></label>
+          <div class="field-row"><label class="field"><span>宽度（m）</span><input id="boothWidth" type="number" min="1" step=".5" /></label><label class="field"><span>深度（m）</span><input id="boothDepth" type="number" min="1" step=".5" /></label></div>
+          <div class="field"><span>显示颜色</span><div class="color-row" id="colorRow"><button data-color="#21d4a7" style="--swatch:#21d4a7"></button><button data-color="#36a3ff" style="--swatch:#36a3ff"></button><button data-color="#8b6cff" style="--swatch:#8b6cff"></button><button data-color="#ffb547" style="--swatch:#ffb547"></button><button data-color="#ff6577" style="--swatch:#ff6577"></button></div></div>
+          <button class="route-button" id="planRouteBtn"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M7.5 16.5 16.5 7.5"/></svg><span><strong>规划到此展位</strong><small>从当前楼层主入口出发</small></span></button>
+        </div>
+
+        <div class="inspector-footer">
+          <div><span>界面主题</span><small>支持渐变色</small></div>
+          <div class="theme-picker">
+            <button class="theme-dot active" data-theme="ocean" title="深海蓝"></button>
+            <button class="theme-dot" data-theme="violet" title="星云紫"></button>
+            <button class="theme-dot" data-theme="sunset" title="日落橙"></button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="mobile-dock">
+    <button data-mobile-view="floors"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span>楼层</span></button>
+    <button class="active" data-mobile-view="edit"><svg viewBox="0 0 24 24"><path d="m6 3 12 8-7 2-3 7z"/></svg><span>编辑</span></button>
+    <button data-mobile-view="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/></svg><span>属性</span></button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="./cad-geometry.js"></script>
+  <script src="./venue-data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    const legacyFloor=(new URLSearchParams(location.search).get("floor")||"F3").toUpperCase();
+    location.replace(`./campus-all.html?view=${legacyFloor==="F1"?"F1":"F3"}`);
+  </script>
+  <title>国家会展中心 · 多楼层场馆总览</title>
+  <link rel="stylesheet" href="./campus-3f.css" />
+</head>
+<body>
+  <main class="map-shell">
+    <header class="map-header">
+      <div>
+        <span class="eyebrow">NECC · FIGMA SVG</span>
+        <h1 id="pageTitle">场馆总览</h1>
+        <p id="mapStatus">正在识别楼层 SVG…</p>
+      </div>
+      <div class="header-actions">
+        <a id="quickEntry" href="./figma-test.html">进入 7.2 馆</a>
+        <button type="button" id="overviewButton" class="primary">返回全景</button>
+      </div>
+    </header>
+
+    <section class="map-stage" id="mapStage" aria-label="多楼层场馆三维地图">
+      <canvas id="mapCanvas" tabindex="0" aria-label="可拖动、缩放并选择场馆的三维地图。鼠标左键平移，右键旋转；触屏单指旋转，双指平移缩放。"></canvas>
+      <div class="hall-labels" id="hallLabels" aria-hidden="true"></div>
+      <div class="loading" id="loading">正在生成 8 个场馆…</div>
+
+      <aside class="floor-card">
+        <strong id="floorCode">F3</strong>
+        <span id="floorName">三楼展馆层</span>
+        <small>8个主展馆</small>
+        <div class="floor-switch" aria-label="切换楼层">
+          <a data-floor="ALL" href="./campus-all.html">双层</a>
+          <a data-floor="F1" href="?floor=F1">F1</a>
+          <a data-floor="F3" href="?floor=F3">F3</a>
+        </div>
+      </aside>
+
+      <nav class="hall-switcher" id="hallSwitcher" aria-label="选择场馆"></nav>
+
+      <div class="focus-card" id="focusCard" hidden>
+        <span>当前聚焦</span>
+        <strong id="focusName">7.2号馆</strong>
+        <small>其他场馆已半透明 · 继续拉近查看馆内轮廓</small>
+        <a id="enterHall" href="./figma-test.html">进入场馆</a>
+      </div>
+
+      <div class="gesture-hint">左键平移 · 右键旋转 · 滚轮缩放 · 单指旋转 · 双指平移/缩放</div>
+    </section>
+  </main>
+
+  <div id="svgSource" class="svg-source" aria-hidden="true"></div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="./campus-3f.js?v=20260904-2"></script>
+</body>
+</html>

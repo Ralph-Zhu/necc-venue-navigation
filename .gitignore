@@ -1,0 +1,25 @@
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local browser profiles created during UI tests
+.edge-qa*/
+
+# Dependencies and build/cache output
+node_modules/
+dist/
+coverage/
+.cache/
+*.log
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Local archives
+*.zip
+*.tar
+*.tar.gz
+

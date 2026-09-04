@@ -1,0 +1,56 @@
+<svg width="3248" height="1652" viewBox="0 0 3248 1652" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="1.1">
+<rect width="3248" height="1652" fill="white"/>
+<path id="FLOOR_SHAPE__F1__1.1" d="M2888 1337V1383H3005.5V890H2891V774L2649.5 532.5H2557V442L2422.5 307.5L2374 356L2286.5 268.5H309.5V1337H2888Z" fill="#FA0505" fill-opacity="0.2"/>
+<g id="WALL">
+<path id="WALL__1.1__25" d="M2893.5 1383H2887V1336H2775" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__24" d="M2754 1336L2610 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__23" d="M2559 1336L2369 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__22" d="M2320 1336L2153 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__21" d="M2119 1336H2089" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__20" d="M1941 1336L1918 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__19" d="M1897 1336L1713 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__18" d="M1658 1336L1471 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__17" d="M1409 1336L1210 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__16" d="M1041 1336L813 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__15" d="M756 1336L569 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__14" d="M511 1336L398 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__13" d="M309 1118L309 1336" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__12" d="M309 924L309 1085" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__11" d="M309 780L309 817" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__10" d="M2619.5 532H2650L2891 773V890" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__09" d="M2994 890H3005.5V1383H2992.5" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__08" d="M552.5 270H765" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__07" d="M792 270H1038" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__06" d="M1187 270H1424" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__05" d="M1450 270H1513" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__04" d="M1602 270H1665" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__03" d="M1690 270H1938" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__02" d="M2087 270H2286L2374 358L2424 308L2557.5 441.5V531.5H2570" stroke="black" stroke-width="6"/>
+<path id="WALL__1.1__01" d="M526 270H310V679" stroke="black" stroke-width="6"/>
+</g>
+<g id="Door">
+<line id="DOOR__1.1__01" x1="2894" y1="1373" x2="2993" y2="1373" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__02" x1="2559" y1="1330" x2="2610" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__03" x1="2320" y1="1330" x2="2371" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__04" x1="1941" y1="1330" x2="2089" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__05" x1="1658" y1="1330" x2="1713" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__06" x1="1409" y1="1330" x2="1471" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__07" x1="1041" y1="1330" x2="1210" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__08" x1="756" y1="1330" x2="813" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__09" x1="512" y1="1330" x2="569" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__10" x1="310" y1="1330" x2="398" y2="1330" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__11" x1="304" y1="924" x2="304" y2="817" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__12" x1="304" y1="786" x2="304" y2="679" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__13" x1="304" y1="512" x2="304" y2="405" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__14" x1="552" y1="276" x2="526" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__15" x1="791" y1="276" x2="765" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__16" x1="1187" y1="276" x2="1038" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__17" x1="1450" y1="276" x2="1424" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__18" x1="1691" y1="276" x2="1665" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__19" x1="2087" y1="276" x2="1938" y2="276" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__20" x1="2620" y1="538" x2="2570" y2="538" stroke="#00D0EB" stroke-width="20"/>
+<line id="DOOR__1.1__21" x1="2993" y1="894" x2="2891" y2="894" stroke="#00D0EB" stroke-width="20"/>
+</g>
+</g>
+</svg>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>国家会展中心 · 场馆地图</title>
   <link rel="stylesheet" href="./campus-3f.css" />
-  <link rel="stylesheet" href="./campus-all.css?v=20260904-14" />
+  <link rel="stylesheet" href="./campus-all.css?v=20260907-2" />
 </head>
 <body>
   <main class="map-shell">
@@ -41,7 +41,9 @@
         <div class="panel-title">
           <div><small>室内导航</small><strong>规划路线</strong></div>
           <span class="route-state" id="routeState" aria-live="polite">未开始</span>
+          <button type="button" id="navigationToggle" aria-expanded="false" aria-controls="navigationFields">展开导航</button>
         </div>
+        <div id="navigationFields" class="navigation-fields">
         <label>
           <span>起点</span>
           <select id="startSelect" aria-label="导航起点"></select>
@@ -61,6 +63,7 @@
         </fieldset>
         <button type="button" id="routeButton" class="route-button">开始导航</button>
         <div class="route-summary" id="routeSummary" aria-live="polite">默认起点：F1 · 1.1馆 · 1号门</div>
+        </div>
       </aside>
 
       <div class="legend-card">
@@ -75,6 +78,6 @@
   <div id="svgSourceF1" class="svg-source" aria-hidden="true"></div>
   <div id="svgSourceF3" class="svg-source" aria-hidden="true"></div>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="./campus-all.js?v=20260904-14"></script>
+  <script src="./campus-all.js?v=20260907-2"></script>
 </body>
 </html>

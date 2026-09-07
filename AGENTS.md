@@ -8,6 +8,8 @@ This repository contains the National Exhibition and Convention Center SVG-to-3D
 
 Read `MODEL_GENERATION_STANDARD_V2_DRAFT.md` before modifying any geometry, camera, LOD, marker, floor, COVER, or routing behavior. Treat its current proposed values as the implementation baseline until the user confirms replacements.
 
+Read `MODEL_UPDATE_20260907.md` as the latest user-authorized override for SVG sources, exact facility footprints, automatic all-hall LOD, icon density and exploded display spacing.
+
 Key invariants:
 
 - SVG scale is `10 px = 1 m`; do not add responsive model scaling.
@@ -29,8 +31,8 @@ Key invariants:
 
 ## Source assets
 
-- `assets/figma-f1-full-v3.svg`: current F1 source.
-- `assets/figma-f3-full-v6.svg`: current F3 source.
+- `assets/figma-f1-20260907.svg`: current F1 source.
+- `assets/figma-f3-20260907.svg`: current F3 source.
 - `assets/figma-7.2.svg` and related files: 7.2 hall test sources.
 
 Some Figma-exported IDs are historically incorrect. Use the containing floor/hall group as authoritative where documented, and update `SVG_NAMING_CORRECTIONS.md` when correcting source names.
@@ -59,4 +61,3 @@ Do not open pages through `file://`; SVG fetching requires a local HTTP server.
 - Verify F1, F3, combined view, same-floor navigation, and cross-floor navigation.
 - Compare model changes against the regression checklist in the model standard.
 - Do not commit `.edge-qa*` browser profiles, secrets, dependencies, or generated archives.
-

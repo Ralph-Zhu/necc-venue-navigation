@@ -1,5 +1,17 @@
 # 国家会展中心场馆编辑器原型
 
+## 当前版本（2026-09-07）
+
+当前入口是 `campus-all.html`：F1/F3 两层，每层 8 馆及中央商务区，SVG 来源为 `assets/figma-f1-20260907.svg` 与 `assets/figma-f3-20260907.svg`。
+
+启动：`node tools/static-server.js`，浏览器访问 `http://127.0.0.1:8765/campus-all.html`。使用 HTTP 服务加载，不直接双击地图页面。
+
+制作约束先读 `AGENTS.md`，再读 `MODEL_GENERATION_STANDARD_V2_DRAFT.md` 与最新覆盖规则 `MODEL_UPDATE_20260907.md`。跨设备继续见 `MAC_SETUP.md`。
+
+新地图导航仍需校准通行入口和跨层连接；不要将当前原型路线视为现场已验证路线。
+
+## 历史编辑器说明
+
 模型制作、命名、尺寸、交互和发布验收统一遵循 [《SVG → 3D 模型生成标准》](./MODEL_GENERATION_STANDARD.md)。
 
 这是一个无需安装构建工具的 Web 演示。当前已经直接读取 `1.1号馆.dxf` 和 `1.2号馆.dxf` 的有效图层；CAD中的 `294 × 207.9 m` 是图框，排除图框后场馆有效线稿约为 `276.2 × 125 m`。

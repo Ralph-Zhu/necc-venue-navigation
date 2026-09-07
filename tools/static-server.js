@@ -1,11 +1,12 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 
 const root = path.resolve(__dirname, "..");
 const types = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".jpg":"image/jpeg",".png":"image/png",".csv":"text/csv; charset=utf-8"};
 
-http.createServer((request,response)=>{
+const server=http.createServer((request,response)=>{
   const pathname=decodeURIComponent(new URL(request.url,"http://127.0.0.1").pathname);
   const target=path.resolve(root,"."+pathname);
   if(!target.startsWith(root)){response.writeHead(403).end("Forbidden");return;}
@@ -17,4 +18,15 @@ http.createServer((request,response)=>{
       response.end(data);
     });
   });
-}).listen(8765,"127.0.0.1");
+});
+
+server.listen(8765,"0.0.0.0",()=>{
+  console.log("本机访问：http://127.0.0.1:8765/campus-all.html");
+  for(const addresses of Object.values(os.networkInterfaces())){
+    for(const address of addresses||[]){
+      if(address.family==="IPv4"&&!address.internal){
+        console.log(`手机访问：http://${address.address}:8765/campus-all.html`);
+      }
+    }
+  }
+});

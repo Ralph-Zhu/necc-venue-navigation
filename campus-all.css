@@ -1,4 +1,15 @@
 .multi-floor-card{width:142px}
+.navigation-fields{display:contents}.navigation-fields>label{display:grid;grid-template-columns:46px 1fr;align-items:center;gap:9px;margin-top:9px}.navigation-fields>label>span{color:var(--muted);font-size:12px;font-weight:700}#navigationToggle{display:none}
+@media(max-width:720px){
+  #navigationToggle{display:block;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:rgba(95,241,210,.1);color:var(--accent);font-weight:700;flex-shrink:0}
+  .navigation-panel{max-height:65dvh;overflow:hidden;display:flex;flex-direction:column;bottom:max(12px,env(safe-area-inset-bottom))!important}
+  .navigation-panel .panel-title{flex-shrink:0;gap:8px}
+  .navigation-panel .panel-title strong{font-size:16px}.navigation-panel .panel-title small{display:none}
+  .navigation-panel.is-collapsed .panel-title{margin-bottom:0!important}
+  .navigation-panel.is-collapsed .navigation-fields{display:none}
+  .navigation-fields{display:block;overflow-y:auto;overscroll-behavior:contain;min-height:0;padding-bottom:2px}
+}
+.hall-label{font-size:13px;padding:6px 10px;min-width:0;border-radius:9px;line-height:18px}.hall-label.focused{font-size:13px}.svg-source svg{width:8272px;height:8274px}#mapCanvas{touch-action:none}
 .navigation-panel{position:absolute;z-index:8;top:20px;right:20px;width:min(330px,calc(100% - 40px));padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 16px 48px rgba(0,0,0,.34);backdrop-filter:blur(16px)}
 .panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-title small,.panel-title strong{display:block}.panel-title small{color:var(--muted);font-size:11px}.panel-title strong{margin-top:2px;font-size:20px}.route-state{padding:5px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:11px;font-weight:800}.route-state.active{border-color:rgba(95,241,210,.55);background:rgba(95,241,210,.13);color:var(--accent)}
 .navigation-panel>label{display:grid;grid-template-columns:46px 1fr;align-items:center;gap:9px;margin-top:9px}.navigation-panel>label>span,.navigation-panel legend{color:var(--muted);font-size:12px;font-weight:700}.navigation-panel select{width:100%;min-height:44px;padding:0 34px 0 10px;border:1px solid var(--line);border-radius:10px;background:#102532;color:var(--text);outline:none}.navigation-panel select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(95,241,210,.18)}

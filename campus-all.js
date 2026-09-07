@@ -1,7 +1,7 @@
 (()=>{
   "use strict";
   const MODEL_STANDARD={
-    version:"MGS-2.0-draft",
+    version:"MGS-2.1-20260907",
     floorThickness:.15,
     wallHeight:2.4,
     doorHeight:2.4,
@@ -10,11 +10,11 @@
     stairsHeight:1,
     escalatorSteps:10,
     escalatorHeight:1.1,
-    explodedFloorGap:24
+    explodedFloorGap:700
   };
   const FLOOR_DEFS=[
-    {id:"F1",source:"./assets/figma-f1-full-v3.svg?v=20260904-1",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1"],color:0x4e9f92},
-    {id:"F3",source:"./assets/figma-f3-full-v6.svg?v=20260903-2",root:"F3",physicalElevation:null,overviewOffset:MODEL_STANDARD.explodedFloorGap,halls:["1.2","2.2","3.2","4.2","5.2","6.2","7.2","8.2"],color:0x4d91aa}
+    {id:"F1",source:"./assets/figma-f1-20260907.svg",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1"],color:0x4e9f92},
+    {id:"F3",source:"./assets/figma-f3-20260907.svg",root:"F3",physicalElevation:null,overviewOffset:MODEL_STANDARD.explodedFloorGap,halls:["1.2","2.2","3.2","4.2","5.2","6.2","7.2","8.2"],color:0x4d91aa}
   ];
   const viewParams=new URLSearchParams(location.search),requestedView=(viewParams.get("view")||viewParams.get("floor")||"ALL").toUpperCase();
   let viewMode=["ALL","F1","F3"].includes(requestedView)?requestedView:"ALL";
@@ -35,11 +35,12 @@
   const CONNECTORS=new Set(["elevator","escalator","stairs"]);
   const world=point=>new THREE.Vector3((point.x-VIEW.w/2)*SCALE,0,(point.y-VIEW.h/2)*SCALE);
   const distance2d=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
+  const svgMatrices=new WeakMap();
 
   function rootPoint(svg,node,x,y){
     const p=svg.createSVGPoint();p.x=x;p.y=y;
-    const matrix=node.getCTM();if(!matrix)return{x,y};
-    const result=p.matrixTransform(matrix);return{x:result.x,y:result.y};
+    let relative=svgMatrices.get(node);if(!relative){const matrix=node.getCTM();if(!matrix)return{x,y};relative=svg.getCTM().inverse().multiply(matrix);svgMatrices.set(node,relative)}
+    const result=p.matrixTransform(relative);return{x:result.x,y:result.y};
   }
   function transformedPath(svg,node,spacing=18){
     let total=0;try{total=node.getTotalLength()}catch(_){return[]}
@@ -51,7 +52,36 @@
     }
     return points;
   }
+  function exactSubpaths(svg,node,spacing){
+    const parts=(node.getAttribute("d")||"").match(/M[^M]*/g)||[],result=[];
+    for(const d of parts){
+      const clone=document.createElementNS("http://www.w3.org/2000/svg","path");clone.setAttribute("d",d);
+      const total=clone.getTotalLength(),count=Math.max(4,Math.min(6000,Math.ceil(total/Math.min(spacing,6))));
+      if(!total)continue;
+      const points=[];
+      if(!/[CcSsQqTtAaLlHhVvml]/.test(d)){
+        let x=0,y=0,first=null;
+        for(const command of d.match(/[MLHVZ][^MLHVZ]*/g)||[]){const values=(command.slice(1).match(/[-+]?(?:\d*\.\d+|\d+)(?:e[-+]?\d+)?/gi)||[]).map(Number),type=command[0];
+          if(type==="M"||type==="L"){for(let i=0;i<values.length;i+=2){x=values[i];y=values[i+1];points.push(rootPoint(svg,node,x,y));if(!first)first={x,y}}}
+          else if(type==="H"||type==="V"){for(const value of values){if(type==="H")x=value;else y=value;points.push(rootPoint(svg,node,x,y))}}
+          else if(type==="Z"&&first)points.push(rootPoint(svg,node,first.x,first.y));
+        }
+      }else for(let i=0;i<=count;i++){const p=clone.getPointAtLength(total*i/count);points.push(rootPoint(svg,node,p.x,p.y))}
+      if(points.length>1)result.push(points);
+    }return result;
+  }
+  function minimumFrame(points){
+    let best=null;
+    for(let i=1;i<points.length;i++){
+      const dx=points[i].x-points[i-1].x,dz=points[i].z-points[i-1].z,length=Math.hypot(dx,dz);if(length<.001)continue;
+      const ux=dx/length,uz=dz/length;let minU=Infinity,maxU=-Infinity,minV=Infinity,maxV=-Infinity;
+      for(const p of points){const u=p.x*ux+p.z*uz,v=-p.x*uz+p.z*ux;minU=Math.min(minU,u);maxU=Math.max(maxU,u);minV=Math.min(minV,v);maxV=Math.max(maxV,v)}
+      const width=maxU-minU,depth=maxV-minV,area=width*depth;
+      if(!best||area<best.area){const u=(minU+maxU)/2,v=(minV+maxV)/2;best={area,width,depth,rotation:-Math.atan2(uz,ux),position:new THREE.Vector3(u*ux-v*uz,0,u*uz+v*ux)}}
+    }return best;
+  }
   function transformedSegments(svg,node,spacing=10){
+    if(node.tagName.toLowerCase()==="path"&&/M/.test(node.getAttribute("d")||""))return exactSubpaths(svg,node,spacing).flatMap(points=>pathSegments(points));
     let total=0;try{total=node.getTotalLength()}catch(_){return[]}
     if(!Number.isFinite(total)||total<=0)return[];
     const count=Math.max(12,Math.min(2200,Math.ceil(total/spacing))),step=total/count,segments=[];let previousLocal=null,previousRoot=null;
@@ -62,6 +92,7 @@
     }return segments;
   }
   function transformedSubpaths(svg,node,spacing=10){
+    if(node.tagName.toLowerCase()==="path"&&/M/.test(node.getAttribute("d")||""))return exactSubpaths(svg,node,spacing);
     let total=0;try{total=node.getTotalLength()}catch(_){return[]}
     if(!Number.isFinite(total)||total<=0)return[];
     const count=Math.max(16,Math.min(2600,Math.ceil(total/spacing))),step=total/count,subpaths=[];let current=[],previousLocal=null;
@@ -73,7 +104,7 @@
   function shapeMesh(points,height,material){
     if(points.length<3)return null;
     const shape=new THREE.Shape();points.forEach((point,index)=>{const value=world(point);index?shape.lineTo(value.x,value.z):shape.moveTo(value.x,value.z)});shape.closePath();
-    const geometry=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:true,bevelSize:.18,bevelThickness:.12,bevelSegments:1});
+    const geometry=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:false});
     const mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;return mesh;
   }
   function drawShapePath(target,points){points.forEach((point,index)=>{const value=world(point);index?target.lineTo(value.x,value.z):target.moveTo(value.x,value.z)});target.closePath()}
@@ -81,11 +112,11 @@
   function compoundShapeMesh(subpaths,height,material){
     const ordered=subpaths.filter(points=>points.length>=3).sort((a,b)=>polygonArea(b)-polygonArea(a));if(!ordered.length)return null;
     const shape=new THREE.Shape();drawShapePath(shape,ordered[0]);ordered.slice(1).forEach(points=>{const hole=new THREE.Path();drawShapePath(hole,points);shape.holes.push(hole)});
-    const geometry=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:true,bevelSize:.16,bevelThickness:.1,bevelSegments:1}),mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;return mesh;
+    const geometry=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:false}),mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;return mesh;
   }
   function separateShapeMesh(subpaths,height,material){
     const shapes=subpaths.filter(points=>points.length>=3).map(points=>{const shape=new THREE.Shape();drawShapePath(shape,points);return shape});if(!shapes.length)return null;
-    const geometry=new THREE.ExtrudeGeometry(shapes,{depth:height,bevelEnabled:true,bevelSize:.16,bevelThickness:.1,bevelSegments:1}),mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;return mesh;
+    const geometry=new THREE.ExtrudeGeometry(shapes,{depth:height,bevelEnabled:false}),mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;return mesh;
   }
   function pathSegments(points){return points.slice(1).map((point,index)=>[points[index],point])}
   function segmentBatch(segments,height,depth,material,baseY=0){
@@ -99,35 +130,39 @@
   }
   function doorNumber(id){const match=String(id||"").trim().match(/__(\d{2,3})(?:\D|$)/);return match?+match[1]:null}
   function footprintFrame(svg,node){
+    const polygon=transformedSubpaths(svg,node,3)[0];
+    if(polygon?.length>=3){const frame=minimumFrame(polygon.map(world));if(frame)frame.sourcePolygon=polygon;return frame}
     let box;try{box=node.getBBox()}catch(_){return null}if(!box||box.width<.1||box.height<.1)return null;
     const corners=[[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]].map(([x,y])=>world(rootPoint(svg,node,x,y)));
     const center=corners.reduce((sum,p)=>sum.add(p),new THREE.Vector3()).multiplyScalar(.25);
-    return{position:center,width:Math.max(.18,corners[0].distanceTo(corners[1])),depth:Math.max(.18,corners[1].distanceTo(corners[2])),rotation:-Math.atan2(corners[1].z-corners[0].z,corners[1].x-corners[0].x)};
-  }
-  function normalizedFacilityFrame(frame,type){
-    const limits={
-      elevator:{width:6,depth:6},
-      stairs:{long:12,cross:6},
-      escalator:{long:20,cross:6}
-    }[type.key];
-    if(!limits)return frame;
-    const result={...frame,position:frame.position.clone()};
-    if(limits.long){
-      const alongDepth=result.depth>result.width;
-      if(alongDepth){result.depth=Math.min(result.depth,limits.long);result.width=Math.min(result.width,limits.cross)}
-      else{result.width=Math.min(result.width,limits.long);result.depth=Math.min(result.depth,limits.cross)}
-    }else{
-      result.width=Math.min(result.width,limits.width);result.depth=Math.min(result.depth,limits.depth);
-    }
-    return result;
+    return{position:center,width:corners[0].distanceTo(corners[1]),depth:corners[0].distanceTo(corners[2]),rotation:-Math.atan2(corners[1].z-corners[0].z,corners[1].x-corners[0].x)};
   }
   function orientedBox(frame,height,color,baseY=0){const mesh=new THREE.Mesh(new THREE.BoxGeometry(frame.width,height,frame.depth),new THREE.MeshStandardMaterial({color,roughness:.62,metalness:.04}));mesh.position.set(frame.position.x,baseY+height/2,frame.position.z);mesh.rotation.y=frame.rotation;return mesh}
   function stairsObject(frame,color,escalator=false){
     const group=new THREE.Group(),alongDepth=frame.depth>frame.width,length=alongDepth?frame.depth:frame.width,cross=alongDepth?frame.width:frame.depth;group.position.set(frame.position.x,0,frame.position.z);group.rotation.y=frame.rotation+(alongDepth?-Math.PI/2:0);
     const material=new THREE.MeshStandardMaterial({color,roughness:.7,metalness:escalator?.12:0}),steps=escalator?MODEL_STANDARD.escalatorSteps:MODEL_STANDARD.stairsSteps,stepLength=length/steps,rise=escalator?MODEL_STANDARD.escalatorHeight:MODEL_STANDARD.stairsHeight;
-    for(let index=0;index<steps;index++){const height=.1+rise*(index+1)/steps,step=new THREE.Mesh(new THREE.BoxGeometry(stepLength*1.04,height,Math.max(cross,.5)),material);step.position.set(-length/2+stepLength*(index+.5),height/2,0);group.add(step)}return group;
+    for(let index=0;index<steps;index++){const height=rise*(index+1)/steps,step=new THREE.Mesh(new THREE.BoxGeometry(stepLength,height,cross),material);step.position.set(-length/2+stepLength*(index+.5),height/2,0);group.add(step)}
+    if(escalator){const railMaterial=new THREE.MeshStandardMaterial({color:0x617b85,roughness:.35});for(const sign of [-1,1]){const rail=new THREE.Mesh(new THREE.BoxGeometry(Math.hypot(length,rise),.09,Math.min(.12,cross*.08)),railMaterial);rail.rotation.z=Math.atan2(rise,length);rail.position.set(0,rise/2+.2,sign*(cross/2-Math.min(.12,cross*.08)/2));group.add(rail)}}return group;
   }
-  function facilityObject(sourceFrame,type){const frame=normalizedFacilityFrame(sourceFrame,type);if(["male","female","accessible"].includes(type.key))return orientedBox(frame,.02,type.color,.01);if(type.key==="elevator")return orientedBox(frame,MODEL_STANDARD.elevatorHeight,type.color,.02);if(type.key==="stairs")return stairsObject(frame,type.color,false);if(type.key==="escalator")return stairsObject(frame,type.color,true);return null}
+  function facilityObject(frame,type){
+    if(["male","female","accessible","elevator"].includes(type.key)){
+      const height=type.key==="elevator"?MODEL_STANDARD.elevatorHeight:.02,base=type.key==="elevator"?0:.01;
+      if(frame.sourcePolygon){const mesh=shapeMesh(frame.sourcePolygon,height,new THREE.MeshStandardMaterial({color:type.color,roughness:.62}));mesh.position.y=base+height;mesh.userData.facility=true;return mesh}
+      return orientedBox(frame,height,type.color,base);
+    }
+    if(type.key==="stairs")return stairsObject(frame,type.color,false);if(type.key==="escalator")return stairsObject(frame,type.color,true);return null;
+  }
+  function batchFacilities(group){
+    group.updateWorldMatrix(true,true);const inverse=group.matrixWorld.clone().invert(),buckets=new Map(),removed=[];
+    group.traverse(mesh=>{if(!mesh.isMesh||mesh.isInstancedMesh||(!mesh.userData.facility&&mesh.geometry.type!=="BoxGeometry"))return;
+      const key=mesh.material.color.getHexString()+":"+mesh.material.roughness+":"+mesh.material.metalness;
+      if(!buckets.has(key))buckets.set(key,{material:mesh.material.clone(),positions:[],normals:[],indices:[]});
+      const bucket=buckets.get(key),geometry=mesh.geometry.clone().applyMatrix4(inverse.clone().multiply(mesh.matrixWorld)),offset=bucket.positions.length/3;
+      bucket.positions.push(...geometry.attributes.position.array);bucket.normals.push(...geometry.attributes.normal.array);if(geometry.index){for(const index of geometry.index.array)bucket.indices.push(index+offset)}else{for(let i=0;i<geometry.attributes.position.count;i++)bucket.indices.push(i+offset)}geometry.dispose();removed.push(mesh);
+    });
+    removed.forEach(mesh=>{mesh.removeFromParent();mesh.geometry.dispose()});
+    for(const b of buckets.values()){const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(b.positions,3));g.setAttribute("normal",new THREE.Float32BufferAttribute(b.normals,3));g.setIndex(b.indices);g.computeBoundingSphere();group.add(new THREE.Mesh(g,b.material))}
+  }
   function semanticLeaves(root,pattern){
     const matches=[...root.querySelectorAll("[id]")].filter(node=>pattern.test((node.id||"").trim()));
     return matches.filter(node=>!matches.some(parent=>parent!==node&&parent.contains(node)));
@@ -135,7 +170,7 @@
   function semanticGeometry(root,pattern){
     const selector="path,rect,polygon,polyline,circle,ellipse";
     const named=semanticLeaves(root,pattern).flatMap(node=>node.matches(selector)?[node]:[...node.querySelectorAll(selector)]);
-    const unique=[];named.forEach(node=>{if(!unique.includes(node))unique.push(node)});return unique;
+    const unique=[];named.forEach(node=>{if(!node.closest("mask,defs,clipPath")&&!unique.includes(node))unique.push(node)});return unique;
   }
   function facilityIcon(key){
     const icons={
@@ -163,13 +198,13 @@
     const texts=await Promise.all(responses.map(response=>response.text()));
     const svgs=texts.map((text,index)=>{const holder=document.querySelector(`#svgSource${FLOOR_DEFS[index].id}`);holder.innerHTML=text;return holder.querySelector("svg")});
     const compact=matchMedia("(max-width:720px)").matches;
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:"high-performance",logarithmicDepthBuffer:true});
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:"high-performance"});
     renderer.setPixelRatio(Math.min(devicePixelRatio,compact?1.15:1.45));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
     const scene=new THREE.Scene();scene.background=new THREE.Color(0x07111b);
     const camera=new THREE.PerspectiveCamera(42,1,.5,4000);scene.add(new THREE.HemisphereLight(0xd6f3ff,0x0c1b24,2.5));
     const sun=new THREE.DirectionalLight(0xfff5df,2.7);sun.position.set(-380,620,260);scene.add(sun);
     const rim=new THREE.DirectionalLight(0x57d9cc,1.15);rim.position.set(480,180,-360);scene.add(rim);
-    const grid=new THREE.GridHelper(1120,28,0x28515e,0x132b35);grid.position.y=-2;scene.add(grid);
+    const grid=new THREE.GridHelper(1120,28,0x28515e,0x132b35);grid.position.y=-2;grid.visible=false;scene.add(grid);
     const halls=[],endpoints=[],graph=new Map(),routeGroup=new THREE.Group(),floorModels=[],floorGroups=new Map(),wallObstacles=new Map(),walkableByFloor=new Map(),connectorPairs=[];scene.add(routeGroup);
     const floorDisplayOffset=floor=>viewMode==="ALL"?(FLOOR_DEFS.find(def=>def.id===floor)?.overviewOffset||0):0;
     const displayedPosition=(position,floor)=>position.clone().setY(position.y+floorDisplayOffset(floor));
@@ -184,44 +219,54 @@
       const groundContainer=[...root.children].find(child=>child.tagName?.toLowerCase()==="g"&&child.querySelector('path[id="Subtract"]'));
       const groundPath=groundContainer?.querySelector('path[id="Subtract"]');
       if(groundPath){
-        const groundSubpaths=transformedSubpaths(svg,groundPath,8),groundMaterial=new THREE.MeshStandardMaterial({color:floorIndex?0x263a48:0x263f3f,roughness:.94,metalness:.01,transparent:true,opacity:.96});
-        const groundMesh=compoundShapeMesh(groundSubpaths,MODEL_STANDARD.floorThickness,groundMaterial);if(groundMesh){groundMesh.position.y=-MODEL_STANDARD.floorThickness;floorGroup.add(groundMesh);floorGroup.userData.groundMesh=groundMesh}
+        const groundSubpaths=transformedSubpaths(svg,groundPath,8),groundMaterial=new THREE.MeshStandardMaterial({color:floorIndex?0x263a48:0x263f3f,roughness:.94,metalness:.01});
+        groundMaterial.polygonOffset=true;groundMaterial.polygonOffsetFactor=2;groundMaterial.polygonOffsetUnits=4;
+        const groundMesh=compoundShapeMesh(groundSubpaths,MODEL_STANDARD.floorThickness,groundMaterial);if(groundMesh){groundMesh.position.y=-.03;floorGroup.add(groundMesh);floorGroup.userData.groundMesh=groundMesh}
         walkableByFloor.get(floorDef.id).ground=groundSubpaths.map(points=>points.map(world));
       }
       const mid={id:`${floorDef.id}:mid`,kind:"mid",floor:floorDef.id,position:new THREE.Vector3(0,.2,0)};ensureNode(mid);
       const centerNode=allGroups.find(node=>/^mid(?:_|$)/i.test(node.id||""));
       if(centerNode){
-        const centerFloor=[...centerNode.children].find(node=>node.tagName?.toLowerCase()==="path"&&/^floor$/i.test(node.id||""))||[...root.children].find(node=>node.tagName?.toLowerCase()==="path"&&/^floor$/i.test(node.id||""));
+        const midDetail=new THREE.Group();floorGroup.add(midDetail);
+        const centerFloor=[...centerNode.children].find(node=>node.tagName?.toLowerCase()==="path"&&/^floor(?:__|$)/i.test(node.id||""))||[...root.children].find(node=>node.tagName?.toLowerCase()==="path"&&/^floor(?:__|$)/i.test(node.id||""));
+        let midHall=null;
         if(centerFloor){
           const subpaths=transformedSubpaths(svg,centerFloor,6),material=new THREE.MeshStandardMaterial({color:floorIndex?0x6c7f88:0x657e78,roughness:.8,metalness:.02});
           const evenodd=/evenodd/i.test(`${centerFloor.getAttribute("fill-rule")||""} ${centerFloor.getAttribute("clip-rule")||""}`),centerMesh=evenodd?compoundShapeMesh(subpaths,MODEL_STANDARD.floorThickness,material):separateShapeMesh(subpaths,MODEL_STANDARD.floorThickness,material);
-          if(centerMesh){centerMesh.position.y=-MODEL_STANDARD.floorThickness;floorGroup.add(centerMesh)}
+          if(centerMesh){
+            midDetail.add(centerMesh);
+            const coverNode=[...centerNode.children].find(n=>/^cover/i.test(n.id||"")),coverMesh=coverNode?compoundShapeMesh(transformedSubpaths(svg,coverNode,6),MODEL_STANDARD.floorThickness,material.clone()):centerMesh.clone();coverMesh.material=material.clone();coverMesh.position.y=.04;floorGroup.add(coverMesh);
+            const bounds=new THREE.Box3().setFromPoints(subpaths.flat().map(world)),center=bounds.getCenter(new THREE.Vector3());
+            const label=document.createElement("button");label.className="hall-label";label.textContent="中央商务区";labels.appendChild(label);
+            midHall={id:"mid",floor:floorDef.id,center,bounds,detailGroup:midDetail,coverMesh,floorMesh:centerMesh,materials:[],endpoints:[],label};halls.push(midHall);label.addEventListener("click",()=>focusHall(midHall));
+            coverMesh.userData={hall:"mid",floor:floorDef.id};centerMesh.userData={hall:"mid",floor:floorDef.id};
+          }
           const ordered=subpaths.filter(points=>points.length>=3).sort((a,b)=>polygonArea(b)-polygonArea(a));
           if(ordered[0])walkableByFloor.get(floorDef.id).areas.push(ordered[0].map(world));
           if(evenodd)walkableByFloor.get(floorDef.id).blocked.push(...ordered.slice(1).map(points=>points.map(world)));
         }
-        const centerWall=[...centerNode.children].find(node=>/^WALLS?$/i.test((node.id||"").trim()));
+        const centerWall=[...centerNode.children].find(node=>/^WALLS?(?:__|$)/i.test((node.id||"").trim()));
         if(centerWall){
-          const paths=centerWall.tagName.toLowerCase()==="path"?[centerWall]:[...centerWall.querySelectorAll("path")],segments=paths.flatMap(path=>transformedSegments(svg,path,7));
-          [...centerWall.querySelectorAll?.("line")||[]].forEach(line=>segments.push(lineFromDoor(svg,line)));const mesh=segmentBatch(segments,MODEL_STANDARD.wallHeight,.26,new THREE.MeshStandardMaterial({color:0xe2edf0,roughness:.68}),0);if(mesh)floorGroup.add(mesh);wallObstacles.get(floorDef.id).push(...segments.map(([a,b])=>[world(a),world(b)]));
+          const paths=(centerWall.tagName.toLowerCase()==="path"?[centerWall]:[...centerWall.querySelectorAll("path")]).filter(p=>!p.closest("mask,defs,clipPath")),segments=paths.flatMap(path=>transformedSegments(svg,path,7));
+          [...centerWall.querySelectorAll?.("line")||[]].forEach(line=>segments.push(lineFromDoor(svg,line)));const mesh=segmentBatch(segments,MODEL_STANDARD.wallHeight,.26,new THREE.MeshStandardMaterial({color:0xe2edf0,roughness:.68}),0);if(mesh)midDetail.add(mesh);wallObstacles.get(floorDef.id).push(...segments.map(([a,b])=>[world(a),world(b)]));
         }
-        TYPES.filter(type=>CONNECTORS.has(type.key)).forEach(type=>semanticGeometry(centerNode,type.pattern).forEach(facility=>{const frame=footprintFrame(svg,facility),object=frame&&facilityObject(frame,type);if(object)floorGroup.add(object)}));
+        TYPES.forEach(type=>semanticGeometry(centerNode,type.pattern).forEach((facility,index)=>{const frame=footprintFrame(svg,facility),object=frame&&facilityObject(frame,type);if(object)midDetail.add(object);if(!frame)return;const position=frame.position.clone();position.y=.2;const endpoint={id:`${floorDef.id}:mid:${type.key}:${index}`,kind:"endpoint",type:type.key,floor:floorDef.id,hall:"mid",position,label:`${floorDef.id} · 中央商务区 · ${type.label}${index+1}号`,css:type.css};endpoints.push(endpoint);midHall?.endpoints.push(endpoint);ensureNode(endpoint);addMarker(endpoint)}));
       }
       hallNodes.forEach((node,index)=>{
         const floor=node.querySelector('path[id^="FLOOR__"]');if(!floor)return;
-        const floorPoints=transformedPath(svg,floor,18);if(floorPoints.length<3)return;
+        const floorPoints=transformedSubpaths(svg,floor,6)[0]||[];if(floorPoints.length<3)return;
         walkableByFloor.get(floorDef.id).areas.push(floorPoints.map(world));
         const bounds=new THREE.Box3().setFromPoints(floorPoints.map(world)),center=bounds.getCenter(new THREE.Vector3());center.y=.2;
         const hall={id:node.id,floor:floorDef.id,node,center,bounds,group:new THREE.Group(),endpoints:[],materials:[]};hall.group.userData.hall=node.id;hall.group.userData.floor=floorDef.id;
         const cover=[...node.children].find(child=>child.tagName?.toLowerCase()==="path"&&/^(?:cover(?:_\d+)?|COVER__)/i.test((child.id||"").trim()))||floor;
-        const coverPoints=transformedPath(svg,cover,18),coverMaterial=new THREE.MeshStandardMaterial({color:COLORS[index],roughness:.78,metalness:.02,transparent:true,opacity:floorIndex?.78:.92});
+        const coverPoints=transformedSubpaths(svg,cover,6)[0]||[],coverMaterial=new THREE.MeshStandardMaterial({color:COLORS[index],roughness:.78,metalness:.02});
         const coverMesh=shapeMesh(coverPoints.length>=3?coverPoints:floorPoints,MODEL_STANDARD.floorThickness,coverMaterial);if(coverMesh){coverMesh.position.y=.03;coverMesh.userData.hall=node.id;coverMesh.userData.floor=floorDef.id;hall.group.add(coverMesh);hall.mesh=coverMesh;hall.coverMesh=coverMesh;hall.materials.push(coverMaterial)}
         const detailGroup=new THREE.Group();detailGroup.visible=false;hall.group.add(detailGroup);hall.detailGroup=detailGroup;
-        const floorMaterial=new THREE.MeshStandardMaterial({color:COLORS[index],roughness:.72,metalness:.04,transparent:true,opacity:1});
+        const floorMaterial=new THREE.MeshStandardMaterial({color:COLORS[index],roughness:.72,metalness:.04});
         const floorMesh=shapeMesh(floorPoints,MODEL_STANDARD.floorThickness,floorMaterial);if(floorMesh){floorMesh.userData.hall=node.id;floorMesh.userData.floor=floorDef.id;detailGroup.add(floorMesh);hall.floorMesh=floorMesh}
         const wallMaterial=new THREE.MeshStandardMaterial({color:0xe2edf0,roughness:.68,transparent:true,opacity:.88});
         const wallContainer=[...node.children].find(child=>child.tagName?.toLowerCase()==="g"&&/^WALL(?:S)?(?:__|$)/i.test((child.id||"").trim()));
-        const wallNodes=wallContainer?[...wallContainer.querySelectorAll("path")]:[...node.querySelectorAll('path[id^="WALLS__"],path[id^="WALL__"]')];
+        const wallNodes=(wallContainer?[...wallContainer.querySelectorAll("path")]:[...node.querySelectorAll('path[id^="WALLS__"],path[id^="WALL__"]')]).filter(p=>!p.closest("mask,defs,clipPath"));
         const wallSegments=wallNodes.flatMap(wall=>transformedSegments(svg,wall,9));if(wallContainer)[...wallContainer.querySelectorAll("line")].forEach(wall=>wallSegments.push(lineFromDoor(svg,wall)));
         wallObstacles.get(floorDef.id).push(...wallSegments.map(([a,b])=>[world(a),world(b)]));
         const wallMesh=segmentBatch(wallSegments,MODEL_STANDARD.wallHeight,.26,wallMaterial,0);if(wallMesh){detailGroup.add(wallMesh);hall.wallMesh=wallMesh}
@@ -251,6 +296,7 @@
       const badge=document.createElement("span");badge.className=`floor-badge ${floorDef.id.toLowerCase()}`;badge.textContent=floorDef.id;labels.appendChild(badge);floorGroup.userData.badge=badge;floorGroup.userData.badgePosition=new THREE.Vector3(-430,8,-360);
     });
 
+    halls.forEach(hall=>batchFacilities(hall.detailGroup));
     const connectorTypes=["elevator","escalator","stairs"];
     connectorTypes.forEach(type=>{
       const lower=endpoints.filter(node=>node.floor==="F1"&&node.type===type),upper=endpoints.filter(node=>node.floor==="F3"&&node.type===type);
@@ -258,7 +304,7 @@
         const sameWing=upper.filter(to=>to.hall.split(".")[0]===from.hall.split(".")[0]);
         const candidates=sameWing.length?sameWing:upper;if(!candidates.length)return;
         const to=candidates.reduce((best,item)=>!best||distance2d(from.position,item.position)<distance2d(from.position,best.position)?item:best,null);
-        edge(from,to,MODEL_STANDARD.explodedFloorGap,type);connectorPairs.push({type,lower:from,upper:to});
+        edge(from,to,24,type);connectorPairs.push({type,lower:from,upper:to});
       });
     });
     const defaultStartForView=mode=>{
@@ -276,9 +322,14 @@
     wallObstacles.forEach((segments,floor)=>{
       const index=new Map();segments.forEach(segment=>{const [a,b]=segment,minX=Math.floor((Math.min(a.x,b.x)-2)/WALL_BUCKET),maxX=Math.floor((Math.max(a.x,b.x)+2)/WALL_BUCKET),minZ=Math.floor((Math.min(a.z,b.z)-2)/WALL_BUCKET),maxZ=Math.floor((Math.max(a.z,b.z)+2)/WALL_BUCKET);for(let x=minX;x<=maxX;x++)for(let z=minZ;z<=maxZ;z++){const key=`${x},${z}`;if(!index.has(key))index.set(key,[]);index.get(key).push(segment)}});wallIndexes.set(floor,index);
     });
-    let target=homeForView(viewMode),desiredTarget=homeForView(viewMode),distance=size*(compact?2.8:2.0),desiredDistance=distance,azimuth=-.78,polar=.72,focusedHall=null;
-    const overviewDistance=distance,minDistance=size*.14,maxDistance=size*3.0,raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+    let target=homeForView(viewMode),desiredTarget=homeForView(viewMode),distance=size*(compact?3.7:2.3),desiredDistance=distance,azimuth=-.78,polar=1.05,focusedHall=null;
+    const overviewDistance=distance,minDistance=18,maxDistance=size*5,raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
     let activeRoute=[],selectedDestination=null,framePending=false,travel=0,last=[0,0],dragAction="orbit";const pointers=new Map();
+    const navigationPanel=document.querySelector('.navigation-panel'),navigationToggle=document.querySelector('#navigationToggle'),mobileLayout=matchMedia('(max-width:720px)');
+    function setNavigationCollapsed(collapsed){navigationPanel.classList.toggle('is-collapsed',collapsed);navigationToggle.setAttribute('aria-expanded',String(!collapsed));navigationToggle.textContent=collapsed?'展开导航':'收起';requestRender()}
+    setNavigationCollapsed(mobileLayout.matches);
+    navigationToggle.addEventListener('click',()=>setNavigationCollapsed(!navigationPanel.classList.contains('is-collapsed')));
+    mobileLayout.addEventListener('change',()=>setNavigationCollapsed(mobileLayout.matches));
 
     function setViewMode(mode,{updateUrl=true,manual=false}={}){
       if(!["ALL","F1","F3"].includes(mode))mode="ALL";
@@ -295,7 +346,7 @@
         routeSummary.textContent=start?`默认起点：${start.label}`:"请选择导航起点";
       }
       if(updateUrl){const url=new URL(location.href);url.searchParams.set("view",mode);url.searchParams.delete("floor");history.replaceState({view:mode},"",url)}
-      focusedHall=null;updateHallRendering();desiredTarget.copy(homeForView(mode));desiredDistance=overviewDistance;requestRender();
+      focusedHall=null;updateHallRendering();desiredTarget.copy(homeForView(mode));desiredDistance=mode==="ALL"?overviewDistance:size*(compact?3:1.8);requestRender();
     }
 
     function populateSelects(start){
@@ -305,20 +356,20 @@
       if(start)startSelect.value=start.id;clearRouteButton.disabled=true;
     }
     function updateHallRendering(){
-      const routeHalls=new Set(activeRoute.filter(node=>node.hall).map(node=>`${node.floor}:${node.hall}`));
       halls.forEach(item=>{
-        const key=`${item.floor}:${item.id}`,onRoute=routeHalls.has(key),detailed=onRoute||(!activeRoute.length&&item===focusedHall),emphasized=onRoute||(!activeRoute.length&&(!focusedHall||item===focusedHall));
+        const detailed=distance<size*(item.detailed?.92:.80);item.detailed=detailed;
         if(item.coverMesh)item.coverMesh.visible=!detailed;if(item.detailGroup)item.detailGroup.visible=detailed;
-        item.materials.forEach(material=>material.opacity=emphasized?(item.floor==="F3"?.78:.92):.14);
-        item.label.classList.toggle("focused",onRoute||item===focusedHall);
+        item.materials.forEach(material=>material.opacity=1);
+        item.label.classList.toggle("focused",item===focusedHall);
       });
     }
     function focusHall(hall,move=true){
       focusedHall=hall||null;updateHallRendering();
-      if(hall&&move){desiredTarget.copy(displayedPosition(hall.center,hall.floor));desiredDistance=size*.48}requestRender();
+      if(hall&&move){desiredTarget.copy(displayedPosition(hall.center,hall.floor));desiredDistance=Math.max(hall.bounds.getSize(new THREE.Vector3()).length()*1.15,50)}requestRender();
     }
     function setDestination(id){
       selectedDestination=endpoints.find(node=>node.id===id)||null;endpoints.forEach(node=>node.element.classList.toggle("selected",node===selectedDestination));
+      clearRouteButton.disabled=!selectedDestination&&!activeRoute.length;
       if(selectedDestination){const hall=halls.find(item=>item.floor===selectedDestination.floor&&item.id===selectedDestination.hall);if(hall)focusHall(hall,false)}requestRender();
     }
     function routeWeights(preference,type){
@@ -442,6 +493,7 @@
       if(!routeDrawn){activeRoute=[];updateHallRendering();routeState.textContent="不可达";routeState.classList.remove("active");routeSummary.textContent=result.failedSegment?`${result.failedSegment.from.label} → ${result.failedSegment.to.label} 被墙体或地面边界阻挡`:"墙体或地面边界阻挡了当前路线，请更换终点或换层方式";return}
       const vertical=result.types.find(type=>CONNECTORS.has(type)),preferenceNames={default:"默认",elevator:"优先电梯",escalator:"优先扶梯",stairs:"优先楼梯"};
       routeState.textContent="导航中";routeState.classList.add("active");clearRouteButton.disabled=false;
+      if(mobileLayout.matches)setNavigationCollapsed(true);
       const fallback=result.fallbackFrom?`（${preferenceNames[result.fallbackFrom]}不可达，已自动改道）`:"";
       routeSummary.textContent=`${result.rule} · ${preferenceNames[preference]}${fallback}${vertical?` · 经${TYPES.find(type=>type.key===vertical)?.label||vertical}`:""}｜${result.steps.join(" → ")}`;
       const displayedStart=displayedPosition(start.position,start.floor),displayedEnd=displayedPosition(end.position,end.floor);desiredTarget.copy(displayedStart).add(displayedEnd).multiplyScalar(.5);desiredDistance=Math.max(size*.55,displayedStart.distanceTo(displayedEnd)*1.35);requestRender();
@@ -455,7 +507,7 @@
     function pan(dx,dy){const wpp=2*distance*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/Math.max(stage.clientHeight,1),forward=new THREE.Vector3(-Math.sin(azimuth),0,-Math.cos(azimuth)).normalize(),right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0)).normalize();desiredTarget.addScaledVector(right,-dx*wpp).addScaledVector(forward,dy*wpp)}
     canvas.addEventListener("contextmenu",event=>event.preventDefault());
     canvas.addEventListener("pointerdown",event=>{if(event.button>2)return;event.preventDefault();canvas.setPointerCapture(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});last=[event.clientX,event.clientY];travel=0;dragAction=event.pointerType==="mouse"?(event.button===2?"orbit":"pan"):"orbit"});
-    canvas.addEventListener("pointermove",event=>{if(!pointers.has(event.pointerId))return;const prev=pointers.get(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});const dx=event.clientX-prev.x,dy=event.clientY-prev.y;travel+=Math.hypot(dx,dy);if(pointers.size>1){pan(dx/2,dy/2)}else if(dragAction==="pan")pan(dx,dy);else{azimuth-=dx*.006;polar=THREE.MathUtils.clamp(polar+dy*.005,.17,1.28)}requestRender()});
+    canvas.addEventListener("pointermove",event=>{if(!pointers.has(event.pointerId))return;const before=[...pointers.values()],prev=pointers.get(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});const dx=event.clientX-prev.x,dy=event.clientY-prev.y;travel+=Math.hypot(dx,dy);if(pointers.size>1){const after=[...pointers.values()],oldSpan=Math.hypot(before[0].x-before[1].x,before[0].y-before[1].y),span=Math.hypot(after[0].x-after[1].x,after[0].y-after[1].y);pan(dx/2,dy/2);if(span>5&&oldSpan>5)desiredDistance=THREE.MathUtils.clamp(desiredDistance*oldSpan/span,minDistance,maxDistance)}else if(dragAction==="pan")pan(dx,dy);else{azimuth-=dx*.006;polar=THREE.MathUtils.clamp(polar+dy*.005,.35,1.28)}requestRender()});
     const pointerUp=event=>{pointers.delete(event.pointerId);try{canvas.releasePointerCapture(event.pointerId)}catch(_){}};canvas.addEventListener("pointerup",pointerUp);canvas.addEventListener("pointercancel",pointerUp);
     canvas.addEventListener("wheel",event=>{event.preventDefault();desiredDistance=THREE.MathUtils.clamp(desiredDistance*Math.exp(event.deltaY*.001),minDistance,maxDistance);requestRender()},{passive:false});
     canvas.addEventListener("click",event=>{if(travel>6)return;const rect=canvas.getBoundingClientRect();pointer.x=(event.clientX-rect.left)/rect.width*2-1;pointer.y=-(event.clientY-rect.top)/rect.height*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(halls.filter(hall=>viewMode==="ALL"||hall.floor===viewMode).map(hall=>hall.coverMesh?.visible?hall.coverMesh:hall.floorMesh).filter(Boolean),false)[0];if(hit){const hall=halls.find(item=>item.id===hit.object.userData.hall&&item.floor===hit.object.userData.floor);if(hall)focusHall(hall)}});
@@ -463,13 +515,31 @@
     function resize(){const rect=stage.getBoundingClientRect();renderer.setSize(rect.width,rect.height,false);camera.aspect=rect.width/rect.height;camera.updateProjectionMatrix();requestRender()}
     function requestRender(){if(!framePending){framePending=true;requestAnimationFrame(tick)}}
     function tick(){
-      framePending=false;target.lerp(desiredTarget,.16);distance=THREE.MathUtils.lerp(distance,desiredDistance,.15);const sin=Math.sin(polar);camera.position.set(target.x+distance*sin*Math.sin(azimuth),target.y+distance*Math.cos(polar),target.z+distance*sin*Math.cos(azimuth));camera.lookAt(target);camera.updateMatrixWorld();renderer.render(scene,camera);
-      const rect=stage.getBoundingClientRect(),occupied=[];halls.forEach(hall=>{if(viewMode!=="ALL"&&hall.floor!==viewMode){hall.label.style.display="none";return}const p=displayedPosition(hall.center,hall.floor).add(new THREE.Vector3(0,6,0)).project(camera),x=(p.x*.5+.5)*rect.width,y=(-p.y*.5+.5)*rect.height,visible=p.z>-1&&p.z<1&&x>30&&x<rect.width-30&&y>24&&y<rect.height-24;hall.label.style.display=visible?"block":"none";if(visible){hall.label.style.left=x+"px";hall.label.style.top=y+"px"}});
+      framePending=false;target.lerp(desiredTarget,.16);distance=THREE.MathUtils.lerp(distance,desiredDistance,.15);const sin=Math.sin(polar);camera.position.set(target.x+distance*sin*Math.sin(azimuth),target.y+distance*Math.cos(polar),target.z+distance*sin*Math.cos(azimuth));camera.lookAt(target);camera.updateMatrixWorld();updateHallRendering();renderer.render(scene,camera);
+      const rect=stage.getBoundingClientRect(),occupied=[];
+      for(const panel of stage.querySelectorAll("aside,.legend-card,.gesture-hint")){const r=panel.getBoundingClientRect();if(r.width&&r.height)occupied.push({x:r.left-rect.left+r.width/2,y:r.top-rect.top+r.height/2,w:r.width,h:r.height})}
+      const overlaps=(x,y,w,h)=>occupied.some(r=>Math.abs(r.x-x)<(r.w+w)/2+5&&Math.abs(r.y-y)<(r.h+h)/2+5);
+      const project=(position,floor)=>{const anchor=floorGroups.get(floor).localToWorld(position.clone()),p=anchor.clone().project(camera);return{anchor,p,x:(p.x*.5+.5)*rect.width,y:(-p.y*.5+.5)*rect.height}};
+      const upperGround=floorGroups.get("F3").userData.groundMesh;
+      const occluded=(anchor,floor)=>{if(viewMode!=="ALL"||floor!=="F1"||!upperGround)return false;const delta=anchor.clone().sub(camera.position);raycaster.set(camera.position,delta.clone().normalize());raycaster.far=delta.length()-.3;const hit=raycaster.intersectObject(upperGround,false).length>0;raycaster.far=Infinity;return hit};
+      halls.forEach(hall=>{hall.label.style.display="none";if((viewMode!=="ALL"&&hall.floor!==viewMode)||distance<size*.45)return;const {anchor,p,x,y}=project(hall.center.clone().add(new THREE.Vector3(0,4,0)),hall.floor),w=hall.id==="mid"?100:66,h=30;if(p.z<=-1||p.z>=1||x<w/2||x>rect.width-w/2||y<20||y>rect.height-20||overlaps(x,y,w,h)||occluded(anchor,hall.floor))return;hall.label.style.display="block";hall.label.style.left=x+"px";hall.label.style.top=y+"px";occupied.push({x,y,w,h})});
       FLOOR_DEFS.forEach(def=>{const group=floorGroups.get(def.id);if(!group)return;if(viewMode!=="ALL"&&def.id!==viewMode){group.userData.badge.style.display="none";return}group.userData.badge.style.display="block";const p=displayedPosition(group.userData.badgePosition,def.id).project(camera),x=(p.x*.5+.5)*rect.width,y=(-p.y*.5+.5)*rect.height;group.userData.badge.style.left=x+"px";group.userData.badge.style.top=y+"px"});
-      const showMarkers=focusedHall||distance<size*.62;endpoints.forEach(node=>{const onVisibleFloor=viewMode==="ALL"||node.floor===viewMode,allowed=onVisibleFloor&&showMarkers&&(focusedHall?node.floor===focusedHall.floor&&node.hall===focusedHall.id:true);if(!allowed){node.element.style.display="none";return}const p=displayedPosition(node.position,node.floor).project(camera),x=Math.round((p.x*.5+.5)*rect.width),y=Math.round((-p.y*.5+.5)*rect.height),inView=p.z>-1&&p.z<1&&x>18&&x<rect.width-18&&y>18&&y<rect.height-18,overlap=occupied.some(point=>Math.abs(point.x-x)<27&&Math.abs(point.y-y)<27);const important=node===selectedDestination||node.id===startSelect.value,visible=inView&&(important||!overlap);node.element.style.display=visible?"grid":"none";if(visible){node.element.style.left=x+"px";node.element.style.top=y+"px";occupied.push({x,y})}});
+      const priority={accessible:9,elevator:8,door:7,escalator:6,stairs:5,male:4,female:4},candidates=[];
+      endpoints.forEach(node=>{node.element.style.display="none";if(viewMode!=="ALL"&&node.floor!==viewMode)return;const hall=halls.find(h=>h.floor===node.floor&&h.id===node.hall);if(!hall?.detailed)return;
+        const height=node.type==="elevator"?3.1:CONNECTORS.has(node.type)?1.45:node.type==="door"?2.7:.45;
+        const {anchor,p,x,y}=project(node.position.clone().setY(height),node.floor),near=camera.position.distanceTo(anchor),important=node===selectedDestination||node.id===startSelect.value;
+        if(p.z<=-1||p.z>=1||x<22||x>rect.width-22||y<22||y>rect.height-22)return;
+        if(near>size*.8&&!important)return;if(node.type==="door"&&near>size*.32&&![4,7,16,19].includes(node.number)&&!important)return;
+        candidates.push({node,anchor,x,y,near,score:(important?100:0)+(priority[node.type]||1)});
+      });
+      candidates.sort((a,b)=>b.score-a.score||a.near-b.near||a.node.id.localeCompare(b.node.id));let markerCount=0;
+      const iconLimit=distance<size*.25?Infinity:distance<size*.5?30:12;
+      for(const c of candidates){if(markerCount>=iconLimit)break;if(overlaps(c.x,c.y,28,28)||occluded(c.anchor,c.node.floor))continue;c.node.element.style.display="grid";c.node.element.style.left=c.x+"px";c.node.element.style.top=c.y+"px";occupied.push({x:c.x,y:c.y,w:28,h:28});markerCount++}
+      canvas.dataset.diagnostics=JSON.stringify({view:viewMode,distance:Math.round(distance),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,icons:markerCount,detailAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&h.detailed).length,coverAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&!h.detailed).length,floors:floorModels.map(g=>({floor:g.userData.floor,y:g.position.y,visible:g.visible})),hallCount:halls.filter(h=>h.id!=="mid").length,facilityCount:endpoints.length});
       if(target.distanceToSquared(desiredTarget)>.001||Math.abs(distance-desiredDistance)>.02)requestRender();
     }
-    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.length} 个展馆、${endpoints.length} 个可导航终点`;requestRender();
+    window.venueDiagnostics={renderer,scene,camera,halls,endpoints,floorGroups,standard:MODEL_STANDARD,get view(){return viewMode},get distance(){return distance},setView:setViewMode,focus:focusHall,zoom(value){desiredDistance=value;requestRender()},render:requestRender};
+    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.filter(h=>h.id!=="mid").length} 个展馆、2 个中央商务区、${endpoints.length} 个设施终点`;requestRender();
   }
   start().catch(error=>{console.error(error);loading.textContent=error.message;status.textContent="多层地图生成失败"});
 })();

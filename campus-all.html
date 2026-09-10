@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>国家会展中心 · 场馆地图</title>
   <link rel="stylesheet" href="./campus-3f.css" />
-  <link rel="stylesheet" href="./campus-all.css?v=20260907-2" />
+  <link rel="stylesheet" href="./campus-all.css?v=20260907-3" />
+  <link rel="stylesheet" href="./campus-booths.css?v=1" />
 </head>
 <body>
   <main class="map-shell">
@@ -16,6 +17,7 @@
         <p id="mapStatus">正在识别两个楼层的门和设施…</p>
       </div>
       <div class="header-actions">
+        <button type="button" id="showBooths">1.1馆展位</button>
         <button type="button" id="fitButton">双层全景</button>
         <button type="button" id="clearRouteButton" class="primary">退出导航</button>
       </div>
@@ -71,13 +73,13 @@
         <span><i class="floor-dot f1"></i>F1 展馆层</span>
         <span><i class="route-dot"></i>当前路线</span>
       </div>
-      <div class="gesture-hint">点击设施图标设为终点 · 左键平移 · 右键旋转 · 滚轮缩放</div>
+      <div class="gesture-hint">鼠标：左键平移 · 右键旋转 · 滚轮缩放｜触屏：单指平移 · 双指缩放/旋转</div>
     </section>
   </main>
 
   <div id="svgSourceF1" class="svg-source" aria-hidden="true"></div>
   <div id="svgSourceF3" class="svg-source" aria-hidden="true"></div>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="./campus-all.js?v=20260907-2"></script>
+  <script src="./campus-all.js?v=20260910-1"></script>
 </body>
 </html>

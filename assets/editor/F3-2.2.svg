@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2714 183 1322 2836" width="1322" height="2836"><style>path[id^="FLOOR"]{fill:#f8fafb}path[id^="WALL"],g[id^="WALL"] path{fill:none;stroke:#697c88;stroke-width:2.6}line[id*="DOOR"]{stroke:#139d91}</style><g transform="matrix(1 0 0 1 0 0)"><g xmlns="http://www.w3.org/2000/svg" id="2.2">
+<path id="FLOOR__F3__H2.2" d="M3906.5 2989L3906.9 292L2845 292L2845 2360L3038 2553L3112 2553L3112 2627L3346 2861L3410 2925L3474 2989L3906.5 2989Z" fill="#CA0808" fill-opacity="0.2"/>
+<g id="DOOR__F3__H2.2">
+<line id="DOORS__F3__H2.2__01" y1="-2.5" x2="166" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 2811)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__02" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 2546)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__03" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 2272)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__04" y1="-2.5" x2="181" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 1903)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__05" y1="-2.5" x2="83" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 1641)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__06" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 1370)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__07" y1="-2.5" x2="181" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 1010)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__08" y1="-2.5" x2="89" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 742)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__09" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 468)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__10" y1="-2.5" x2="31" y2="-2.5" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3907 288)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__11" y1="-2.5" x2="131" y2="-2.5" transform="matrix(-1 0 0 1 3510 291)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__12" y1="-2.5" x2="134" y2="-2.5" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 3368 291)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__13" y1="-2.5" x2="26" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 529)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__14" y1="-2.5" x2="46" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 799)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__15" y1="-2.5" x2="158" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 1169)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__16" y1="-2.5" x2="41" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 1444)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__17" y1="-2.5" x2="44" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 1699)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__18" y1="-2.5" x2="163" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 2839 2074)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__19" y1="-2.5" x2="82" y2="-2.5" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 3107 2628)" stroke="#00D0EB" stroke-width="5"/>
+<line id="DOORS__F3__H2.2__20" y1="-2.5" x2="126.574" y2="-2.5" transform="matrix(-0.711046 -0.703146 -0.703146 0.711046 3466 2985)" stroke="#00D0EB" stroke-width="5"/>
+</g>
+<g id="STAIRS__F3__H2.2">
+<rect id="STAIRS__F3__H2.2_13" width="107" height="72" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2770 361)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_12" width="56" height="106" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3126 233)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_11" width="54" height="108" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3510 235)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_10" width="115" height="50" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3955 353)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_09" width="113" height="50" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3955 831)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_08" width="112" height="46" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3955 1258)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_07" width="112" height="46" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3956 1724)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_06" width="117" height="55" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3950 2155)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_05" width="80" height="72" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2770 866)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_04" width="74" height="72" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2770 1286)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_03" width="83" height="72" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2770 1765)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_02" width="90" height="72" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2770 2164)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H2.2_01" width="89" height="50" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3955 2644)" fill="#722B2B"/>
+</g>
+<g id="WC_FEMALE__F3__H2.2">
+<rect id="WC_FEMALE__F3__H2.2_06" width="40" height="70" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2772 1578)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H2.2_06_2" width="40" height="70" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2772 673)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H2.2_04" width="56" height="107" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3019 233)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H2.2_03" width="46" height="50" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3952 1191)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H2.2_03_2" width="46" height="50" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3952 2084)" fill="#DC64CE"/>
+</g>
+<g id="WC_MALE__F3__H2.2">
+<rect id="WC_MALE__F3__H2.2_01" width="45" height="51" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3951 1858)" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H2.2_01_2" width="45" height="51" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3951 966)" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H2.2_01_3" width="40" height="70" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2772 713)" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H2.2_01_4" width="53" height="109" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3618 235)" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H2.2_01_5" width="40" height="70" transform="matrix(-4.37114e-08 1 1 4.37114e-08 2772 1618)" fill="#79A2F4"/>
+</g>
+<g id="WC_ACCESSIBLE__F3__H2.2">
+<rect id="WC_ACCESSIBLE__F3__H2.2_04" width="24" height="19" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 4000 2131)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H2.2_03" width="26" height="23" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 4002 1836)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H2.2_02" width="28" height="23" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 4001 1237)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H2.2_01" width="22" height="23" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3978 944)" fill="#6FA24E"/>
+</g>
+<g id="ESCALATORS__F3__H2.2_">
+<rect id="ESCALATORS__F3__H2.2_04" width="156" height="32" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3934 2364)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H2.2_03" width="156" height="32" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3934 1464)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H2.2_02" width="156" height="32" transform="matrix(-4.37114e-08 1 1 4.37114e-08 3934 562)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H2.2_01" width="193" height="32" transform="matrix(0.707107 0.707107 0.707107 -0.707107 3152 2650.63)" fill="#DFB568"/>
+</g>
+<g id="ELEVATORS__F3__H2.2">
+<g id="ELEVATORS__F3__H2.2_08">
+<path d="M3949 2785L3949 2811L3975 2811L3975 2785L3949 2785Z" fill="#0E3C80"/>
+<path d="M3976 2785L3976 2811L4002 2811L4002 2785L3976 2785Z" fill="#0E3C80"/>
+</g>
+<path id="ELEVATORS__F3__H2.2_07" d="M3973 1618L3973 1644L3999 1644L3999 1618L3973 1618Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H2.2_06" d="M3973 1440L3973 1466L3999 1466L3999 1440L3973 1440Z" fill="#0E3C80"/>
+<g id="ELEVATORS__F3__H2.2_05">
+<path d="M3916 262L3916 288L3942 288L3942 262L3916 262Z" fill="#0E3C80"/>
+<path d="M3943 262L3943 288L3969 288L3969 262L3943 262Z" fill="#0E3C80"/>
+</g>
+<path id="ELEVATORS__F3__H2.2_04" d="M2779 472L2779 498L2805 498L2805 472L2779 472Z" fill="#0E3C80"/>
+<g id="ELEVATORS__F3__H2.2_03">
+<path d="M2779 1373L2779 1399L2805 1399L2805 1373L2779 1373Z" fill="#0E3C80"/>
+<path d="M2808 1373L2808 1399L2834 1399L2834 1373L2808 1373Z" fill="#0E3C80"/>
+</g>
+<path id="ELEVATORS__F3__H2.2_02" d="M2782 804L2782 830L2808 830L2808 804L2782 804Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H2.2_01" d="M2786 1705L2786 1731L2812 1731L2812 1705L2786 1705Z" fill="#0E3C80"/>
+</g>
+<g id="WALL__F3__H2.2">
+<path id="WALLS__F3__H2.2__01" d="M2770 1338L2770 1402.5L2783.5 1402.5M2812.75 1403L2842 1403L2842 1285.45M2842 1285.45L2842 1169L2770 1169L2770 1286M2842 1285.45L2770 1286M2770 1286L2770 1308.9" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__02" d="M3956.22 860L3956.22 942.5L3904 942.5M3904 831.5L3904 1010M4002 942.5L3971.75 942.5M4002 942.5L4002 831L3955.9 831M4002 942.5L4002 965.127M4002 965.127L4002 1010L3949.78 1010L3949.78 1000.5M4002 965.127L3949.78 965.127L3949.78 975" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__03" d="M3956.22 1753L3956.22 1835.5L3904 1835.5M3904 1724.5L3904 1903M4002 1835.5L3971.75 1835.5M4002 1835.5L4002 1724L3955.9 1724M4002 1835.5L4002 1858.13M4002 1858.13L4002 1903L3949.78 1903L3949.78 1893.5M4002 1858.13L3949.78 1858.13L3949.78 1868" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__04" d="M3956.22 1341L3956.22 1258.5L3904 1258.5M3904 1369.5L3904 1191M4002 1258.5L3971.75 1258.5M4002 1258.5L4002 1370L3955.9 1370M4002 1258.5L4002 1235.87M4002 1235.87L4002 1191L3949.78 1191L3949.78 1200.5M4002 1235.87L3949.78 1235.87L3949.78 1226" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__05" d="M3956.22 2234L3956.22 2151.5L3904 2151.5M3904 2262.5L3904 2084M4002 2151.5L3971.75 2151.5M4002 2151.5L4002 2263L3955.9 2263M4002 2151.5L4002 2128.87M4002 2128.87L4002 2084L3949.78 2084L3949.78 2093.5M4002 2128.87L3949.78 2128.87L3949.78 2119" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__06" d="M3904 742L3904 538M3978.76 558C3987.84 558 4006 558 4006 558L4006 742L3978.76 742L3978.76 558Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__07" d="M3904 1644L3904 1440M4002 1644L4002 1542M4002 1440L4002 1542M4002 1542L3968.59 1542M3968.59 1644L3968.59 1542L3968.59 1440" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__08" d="M3904 2546L3904 2342M3968.91 2342C3981.27 2342 4006 2342 4006 2342L4006 2546L3968.91 2546L3968.91 2342Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__09" d="M3904 353.097L3904 435.832L3904 468.424M3904 435.832L3954 435.832L3954 353.097L3904 353.097M3904 319L3904 353.097M4004 468.425L4004 353.097L3979 353.097M4004 468.425L3953.46 468.425M4004 468.425L4004 495" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__10" d="M3906 2740.24L3906 2650.9L3906 2615.7M3906 2650.9L3956 2650.9L3956 2740.24L3906 2740.24M3906 2818L3906 2740.24M4006 2740.24L4006 2615.7M4006 2740.24L3981 2740.24M4006 2740.24L4006 2818L3946 2818L3946 2792.66M4006 2615.7L3955.46 2615.7M4006 2615.7L4006 2587" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__11" d="M3727 288L3727 233M3727 288L3680.17 288M3727 288L3903.97 288.5L3903.97 233M3727 233L3618.5 233M3727 233L3903.97 233M3525.91 288L3510 288L3510 233L3618.5 233M3618.5 233L3618.5 288M3633.35 288L3555.11 288M3903.97 233L3903.97 218M3903.97 218L3935.5 218L4006 288.5M3903.97 218L3510 218" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__12" d="M3379 288L3368 288" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__13" d="M2770 503.5L2770 467.812L2842 467.812M2770 360.75L2842 360.75M2770 360.75L2770 290M2770 360.75L2770 432.125M2842 288L2842 360.75M2842 360.75L2842 467.812M2805 503.5L2842 503.5L2842 467.812M3017.19 287.504L3017.19 232.894M3017.19 287.504L3063.54 287.504M3017.19 287.504L2842 288L2842 232.894M3017.19 232.894L3124.59 232.894M3017.19 232.894L2842 232.894M3216.25 287.504L3232 287.504L3232 232.894L3124.59 232.894M3124.59 232.894L3124.59 287.504M3109.9 287.504L3187.34 287.504M2842 232.894L2842 218M2770 290L2842 218L3232 218M2770 290L2750 310L2750 503.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__14" d="M2842 673L2770 673L2770 579.277M2842 713L2842 673L2842 539L2770 539L2770 579.277M2770 579.277L2842 579.277M2770 753L2842 753L2842 713M2842 713L2770 713M2748 539L2748 753" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__15" d="M2842 1578L2770 1578L2770 1484.28M2842 1618L2842 1578L2842 1444L2770 1444L2770 1484.28M2770 1484.28L2842 1484.28M2770 1658L2842 1658L2842 1618M2842 1618L2770 1618M2748 1444L2748 1658" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__16" d="M2783.5 799L2770 799L2770 863.5L2842 863.5M2812.75 799L2842 799L2842 863.5M2842 863.5L2842 947.625M2770 884.25L2770 947.625M2770 947.625L2770 1011L2842 1011L2842 947.625M2770 947.625L2842 947.625M2746 799L2746 1011" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__17" d="M2783.5 1699L2770 1699L2770 1763.5L2842 1763.5M2812.75 1699L2842 1699L2842 1763.5M2842 1763.5L2842 1847.62M2770 1784.25L2770 1847.62M2770 1847.62L2770 1911L2842 1911L2842 1847.62M2770 1847.62L2842 1847.62M2746 1699L2746 1911" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H2.2__18" d="M3464.5 2984.5L3903.5 2984.5L3903.5 2976M2770 2253.5L2770 2214M2770 2253.5L2783.5 2253.5M2770 2253.5L2770 2293.5M2748 2074L2748 2271.5L2770 2293.5L2842.5 2362.5L3027.5 2547.5L3109.5 2547.5M2783.5 2254L2842 2254L2842 2163.58M2842 2163.58L2842 2074L2770 2074L2770 2164M2842 2163.58L2770 2164M2770 2164L2770 2181.62M2842 2253.5L2842 2362M3109.5 2629.5L3287 2807L3375.75 2895.75" stroke="black" stroke-width="4"/>
+<line id="WALLS__F3__H2.2__19" y1="-2" x2="234" y2="-2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 2750 1169)" stroke="black" stroke-width="4"/>
+</g>
+
+</g></g></svg>

@@ -13,7 +13,7 @@
     explodedFloorGap:700
   };
   const FLOOR_DEFS=[
-    {id:"F1",source:"./assets/figma-f1-20260907.svg",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1"],color:0x4e9f92},
+    {id:"F1",source:"./assets/figma-f1-20260910.svg",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1","NH"],color:0x4e9f92},
     {id:"F3",source:"./assets/figma-f3-20260907.svg",root:"F3",physicalElevation:null,overviewOffset:MODEL_STANDARD.explodedFloorGap,halls:["1.2","2.2","3.2","4.2","5.2","6.2","7.2","8.2"],color:0x4d91aa}
   ];
   const viewParams=new URLSearchParams(location.search),requestedView=(viewParams.get("view")||viewParams.get("floor")||"ALL").toUpperCase();
@@ -23,7 +23,7 @@
   const loading=document.querySelector("#loading"),status=document.querySelector("#mapStatus"),startSelect=document.querySelector("#startSelect");
   const destinationSelect=document.querySelector("#destinationSelect"),routeState=document.querySelector("#routeState"),routeSummary=document.querySelector("#routeSummary");
   const clearRouteButton=document.querySelector("#clearRouteButton");
-  const COLORS=[0x4e9f92,0x4d91aa,0x637dab,0x8a6fa8,0xa66f87,0xa9795c,0x6f9c74,0x4f8f9d];
+  const COLORS=[0x4e9f92,0x4d91aa,0x637dab,0x8a6fa8,0xa66f87,0xa9795c,0x6f9c74,0x4f8f9d,0xa48b74];
   const TYPES=[
     {key:"stairs",label:"楼梯",pattern:/^STAIRS__/,color:0xaa9274,css:"#aa9274"},
     {key:"female",label:"女卫生间",pattern:/^WC_FEMALE__/,color:0xb8798d,css:"#b8798d"},
@@ -126,6 +126,7 @@
     usable.forEach((item,index)=>{position.set((item.p1.x+item.p2.x)/2,baseY+height/2,(item.p1.z+item.p2.z)/2);quaternion.setFromAxisAngle(axis,item.angle);scale.set(item.length,height,depth);matrix.compose(position,quaternion,scale);mesh.setMatrixAt(index,matrix)});mesh.instanceMatrix.needsUpdate=true;return mesh;
   }
   function lineFromDoor(svg,node){
+    if(node.tagName.toLowerCase()==="path"){const total=node.getTotalLength(),a=node.getPointAtLength(0),b=node.getPointAtLength(total);return[rootPoint(svg,node,a.x,a.y),rootPoint(svg,node,b.x,b.y)]}
     return[rootPoint(svg,node,+node.getAttribute("x1"),+node.getAttribute("y1")),rootPoint(svg,node,+node.getAttribute("x2"),+node.getAttribute("y2"))];
   }
   function doorNumber(id){const match=String(id||"").trim().match(/__(\d{2,3})(?:\D|$)/);return match?+match[1]:null}
@@ -238,7 +239,7 @@
             const coverNode=[...centerNode.children].find(n=>/^cover/i.test(n.id||"")),coverMesh=coverNode?compoundShapeMesh(transformedSubpaths(svg,coverNode,6),MODEL_STANDARD.floorThickness,material.clone()):centerMesh.clone();coverMesh.material=material.clone();coverMesh.position.y=.04;floorGroup.add(coverMesh);
             const bounds=new THREE.Box3().setFromPoints(subpaths.flat().map(world)),center=bounds.getCenter(new THREE.Vector3());
             const label=document.createElement("button");label.className="hall-label";label.textContent="中央商务区";labels.appendChild(label);
-            midHall={id:"mid",floor:floorDef.id,center,bounds,detailGroup:midDetail,coverMesh,floorMesh:centerMesh,materials:[],endpoints:[],label};halls.push(midHall);label.addEventListener("click",()=>focusHall(midHall));
+            midHall={id:"mid",floor:floorDef.id,center,bounds,navPolygons:subpaths.map(points=>points.map(world)),detailGroup:midDetail,coverMesh,floorMesh:centerMesh,materials:[],endpoints:[],label};halls.push(midHall);label.addEventListener("click",()=>focusHall(midHall));
             coverMesh.userData={hall:"mid",floor:floorDef.id};centerMesh.userData={hall:"mid",floor:floorDef.id};
           }
           const ordered=subpaths.filter(points=>points.length>=3).sort((a,b)=>polygonArea(b)-polygonArea(a));
@@ -250,14 +251,16 @@
           const paths=(centerWall.tagName.toLowerCase()==="path"?[centerWall]:[...centerWall.querySelectorAll("path")]).filter(p=>!p.closest("mask,defs,clipPath")),segments=paths.flatMap(path=>transformedSegments(svg,path,7));
           [...centerWall.querySelectorAll?.("line")||[]].forEach(line=>segments.push(lineFromDoor(svg,line)));const mesh=segmentBatch(segments,MODEL_STANDARD.wallHeight,.26,new THREE.MeshStandardMaterial({color:0xe2edf0,roughness:.68}),0);if(mesh)midDetail.add(mesh);wallObstacles.get(floorDef.id).push(...segments.map(([a,b])=>[world(a),world(b)]));
         }
-        TYPES.forEach(type=>semanticGeometry(centerNode,type.pattern).forEach((facility,index)=>{const frame=footprintFrame(svg,facility),object=frame&&facilityObject(frame,type);if(object)midDetail.add(object);if(!frame)return;const position=frame.position.clone();position.y=.2;const endpoint={id:`${floorDef.id}:mid:${type.key}:${index}`,kind:"endpoint",type:type.key,floor:floorDef.id,hall:"mid",position,label:`${floorDef.id} · 中央商务区 · ${type.label}${index+1}号`,css:type.css};endpoints.push(endpoint);midHall?.endpoints.push(endpoint);ensureNode(endpoint);addMarker(endpoint)}));
+        TYPES.forEach(type=>semanticGeometry(centerNode,type.pattern).forEach((facility,index)=>{const frame=footprintFrame(svg,facility),object=frame&&facilityObject(frame,type);if(object)midDetail.add(object);if(!frame)return;
+          const outline=frame.sourcePolygon?.map(world)||[[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,z])=>new THREE.Vector3(frame.position.x+Math.cos(frame.rotation)*x*frame.width/2+Math.sin(frame.rotation)*z*frame.depth/2,0,frame.position.z-Math.sin(frame.rotation)*x*frame.width/2+Math.cos(frame.rotation)*z*frame.depth/2));midHall?.navPolygons.push(outline);
+          const position=frame.position.clone();position.y=.2;const endpoint={id:`${floorDef.id}:mid:${type.key}:${index}`,kind:"endpoint",type:type.key,floor:floorDef.id,hall:"mid",position,label:`${floorDef.id} · 中央商务区 · ${type.label}${index+1}号`,css:type.css};endpoints.push(endpoint);midHall?.endpoints.push(endpoint);ensureNode(endpoint);addMarker(endpoint)}));
       }
       hallNodes.forEach((node,index)=>{
         const floor=node.querySelector('path[id^="FLOOR__"]');if(!floor)return;
         const floorPoints=transformedSubpaths(svg,floor,6)[0]||[];if(floorPoints.length<3)return;
         walkableByFloor.get(floorDef.id).areas.push(floorPoints.map(world));
         const bounds=new THREE.Box3().setFromPoints(floorPoints.map(world)),center=bounds.getCenter(new THREE.Vector3());center.y=.2;
-        const hall={id:node.id,floor:floorDef.id,node,center,bounds,group:new THREE.Group(),endpoints:[],materials:[]};hall.group.userData.hall=node.id;hall.group.userData.floor=floorDef.id;
+        const hall={id:node.id,floor:floorDef.id,node,center,bounds,navPolygons:[floorPoints.map(world)],group:new THREE.Group(),endpoints:[],materials:[]};hall.group.userData.hall=node.id;hall.group.userData.floor=floorDef.id;
         const cover=[...node.children].find(child=>child.tagName?.toLowerCase()==="path"&&/^(?:cover(?:_\d+)?|COVER__)/i.test((child.id||"").trim()))||floor;
         const coverPoints=transformedSubpaths(svg,cover,6)[0]||[],coverMaterial=new THREE.MeshStandardMaterial({color:COLORS[index],roughness:.78,metalness:.02});
         const coverMesh=shapeMesh(coverPoints.length>=3?coverPoints:floorPoints,MODEL_STANDARD.floorThickness,coverMaterial);if(coverMesh){coverMesh.position.y=.03;coverMesh.userData.hall=node.id;coverMesh.userData.floor=floorDef.id;hall.group.add(coverMesh);hall.mesh=coverMesh;hall.coverMesh=coverMesh;hall.materials.push(coverMaterial)}
@@ -275,12 +278,12 @@
         const centerNodeGraph={id:`${floorDef.id}:${node.id}:center`,kind:"hall",floor:floorDef.id,hall:node.id,position:center.clone()};ensureNode(centerNodeGraph);edge(centerNodeGraph,mid,distance2d(centerNodeGraph.position,mid.position)+16);
         const hallLabel=document.createElement("button");hallLabel.type="button";hallLabel.className="hall-label";hallLabel.textContent=node.id+"馆";hallLabel.style.pointerEvents="auto";
         hallLabel.addEventListener("click",()=>focusHall(hall));labels.appendChild(hallLabel);hall.label=hallLabel;
-        const doorNodes=[...node.querySelectorAll('line[id*="DOOR"]')],doorSegments=doorNodes.map(door=>lineFromDoor(svg,door));
+        const doorNodes=[...node.querySelectorAll('line[id*="DOOR"],path[id*="DOOR"]')].filter(n=>!n.closest('defs,mask,clipPath')),doorSegments=doorNodes.map(door=>lineFromDoor(svg,door));
         const doorMesh=segmentBatch(doorSegments,MODEL_STANDARD.doorHeight,.1,doorMaterial,0);if(doorMesh){detailGroup.add(doorMesh);hall.doorMesh=doorMesh}
         doorNodes.forEach((door,doorIndex)=>{
           const [a,b]=doorSegments[doorIndex],position=world(a).add(world(b)).multiplyScalar(.5);position.y=.2;
           const number=doorNumber(door.id)||doorIndex+1,id=`${floorDef.id}:${node.id}:door:${number}:${doorIndex}`;
-          const endpoint={id,kind:"endpoint",type:"door",floor:floorDef.id,hall:node.id,number,position,label:`${floorDef.id} · ${node.id}馆 · ${number}号门`,css:"#5cbdda"};
+          const endpoint={id,kind:"endpoint",type:"door",floor:floorDef.id,hall:node.id,number,position,line:doorSegments[doorIndex].map(world),label:`${floorDef.id} · ${node.id}馆 · ${number}号门`,css:"#5cbdda"};
           endpoints.push(endpoint);hall.endpoints.push(endpoint);ensureNode(endpoint);edge(endpoint,centerNodeGraph,distance2d(position,center)+3);addMarker(endpoint);
         });
         TYPES.forEach(type=>{
@@ -289,6 +292,7 @@
             const object=facilityObject(frame,type);if(object)detailGroup.add(object);
             const position=frame.position.clone();position.y=.2;
             const endpoint={id:`${floorDef.id}:${node.id}:${type.key}:${counts[type.key]}`,kind:"endpoint",type:type.key,floor:floorDef.id,hall:node.id,index:counts[type.key],position,label:`${floorDef.id} · ${node.id}馆 · ${type.label}${counts[type.key]}号`,css:type.css};
+            if(['male','female','accessible'].includes(type.key)&&frame.sourcePolygon)endpoint.navigationPolygon=frame.sourcePolygon.map(world);
             endpoints.push(endpoint);hall.endpoints.push(endpoint);ensureNode(endpoint);edge(endpoint,centerNodeGraph,distance2d(position,center)+3);addMarker(endpoint);
           });
         });
@@ -297,6 +301,30 @@
     });
 
     halls.forEach(hall=>batchFacilities(hall.detailGroup));
+    // Exhibition overlay only: fixed venue geometry is not replaced by the standalone SVG.
+    const boothResponse=await fetch('./assets/booths-1.1.json');
+    if(!boothResponse.ok)throw new Error('1.1馆展位数据读取失败');
+    const boothData=await boothResponse.json(),booths=[],boothHall=halls.find(h=>h.floor==='F1'&&h.id==='1.1');
+    let selectedBooth=null;
+    const favoriteKey='necc-demo-booth-favorites-v1';let favorites=new Set();
+    try{favorites=new Set(JSON.parse(localStorage.getItem(favoriteKey)||'[]'))}catch(_){}
+    const detail=document.createElement('aside');detail.className='booth-detail';detail.hidden=true;detail.setAttribute('aria-label','展位简介');
+    detail.innerHTML='<button class="booth-close" aria-label="关闭展位简介">×</button><small>1.1馆 · 模拟展商</small><h2></h2><div class="booth-image" role="img" aria-label="企业图片占位符">▧<br>企业图片占位</div><p data-company></p><p data-intro></p><p data-location></p><p data-contact></p><small data-note>企业与联系方式均为演示数据</small><div class="booth-actions"><button data-favorite aria-pressed="false">☆ 收藏</button><button data-go><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 22 12 12 22 2 12Z"/><path d="M8 16v-5h7m-3-3 3 3-3 3"/></svg>到这里</button></div>';
+    stage.appendChild(detail);
+    for(const record of boothData.booths){
+      const points=record.points.map(([x,y])=>({x,y})),polygon=points.map(world),bounds=new THREE.Box3().setFromPoints(polygon),center=bounds.getCenter(new THREE.Vector3());center.y=1.6;
+      const material=new THREE.MeshStandardMaterial({color:0x6fc7b7,roughness:.78}),mesh=shapeMesh(points,1.3,material);mesh.position.y=1.3;boothHall.detailGroup.add(mesh);
+      const element=document.createElement('div');element.className='booth-label';element.append(document.createTextNode(record.code));const name=document.createElement('span');name.textContent=record.shortName;element.appendChild(name);labels.appendChild(element);
+      const booth={...record,id:`F1:1.1:booth:${record.code}`,kind:'endpoint',type:'booth',position:center.clone().setY(.2),center,polygon,bounds,mesh,element,label:`F1 · 1.1馆 · ${record.code} ${record.shortName}`};
+      mesh.userData.booth=booth;booths.push(booth);endpoints.push(booth);boothHall.endpoints.push(booth);ensureNode(booth);walkableByFloor.get('F1').blocked.push(polygon);
+    }
+    function closeBooth(){detail.hidden=true;if(selectedBooth)selectedBooth.mesh.material.color.setHex(0x6fc7b7);selectedBooth=null;requestRender()}
+    function openBooth(booth){if(selectedBooth)selectedBooth.mesh.material.color.setHex(0x6fc7b7);selectedBooth=booth;booth.mesh.material.color.setHex(0x42e6c4);detail.hidden=false;detail.querySelector('h2').textContent=`${booth.code} · ${booth.shortName}`;detail.querySelector('[data-company]').textContent=booth.company;detail.querySelector('[data-intro]').textContent=booth.intro;detail.querySelector('[data-location]').textContent=`位置：F1 · 1.1馆 · ${booth.code}展位`;detail.querySelector('[data-contact]').textContent=`联系：${booth.contact} ｜ ${booth.phone} ｜ ${booth.email}`;updateFavorite();requestRender()}
+    function updateFavorite(){const saved=favorites.has(selectedBooth?.id),button=detail.querySelector('[data-favorite]');button.textContent=saved?'★ 已收藏':'☆ 收藏';button.setAttribute('aria-pressed',String(saved))}
+    detail.querySelector('.booth-close').onclick=closeBooth;
+    detail.querySelector('[data-favorite]').onclick=()=>{if(!selectedBooth)return;const id=selectedBooth.id;favorites.has(id)?favorites.delete(id):favorites.add(id);try{localStorage.setItem(favoriteKey,JSON.stringify([...favorites]))}catch(_){detail.querySelector('[data-note]').textContent='浏览器禁止存储，收藏仅在本次打开期间有效'}updateFavorite()};
+    detail.querySelector('[data-go]').onclick=()=>{const booth=selectedBooth;if(!booth)return;closeBooth();destinationSelect.value=booth.id;planRoute()};
+    document.addEventListener('keydown',event=>{if(event.key==='Escape')closeBooth()});
     const connectorTypes=["elevator","escalator","stairs"];
     connectorTypes.forEach(type=>{
       const lower=endpoints.filter(node=>node.floor==="F1"&&node.type===type),upper=endpoints.filter(node=>node.floor==="F3"&&node.type===type);
@@ -317,7 +345,7 @@
     const modelBounds=new THREE.Box3();halls.forEach(hall=>modelBounds.union(hall.bounds));
     const campusHome=modelBounds.getCenter(new THREE.Vector3()),size=Math.max(modelBounds.max.x-modelBounds.min.x,modelBounds.max.z-modelBounds.min.z);campusHome.y=MODEL_STANDARD.explodedFloorGap/2;
     const homeForView=mode=>new THREE.Vector3(campusHome.x,mode==="ALL"?MODEL_STANDARD.explodedFloorGap/2:.2,campusHome.z);
-    const WALL_BUCKET=20,GRID_STEP=7,wallIndexes=new Map();
+    const WALL_BUCKET=20,wallIndexes=new Map();
     const bucketKey=(x,z)=>`${Math.floor(x/WALL_BUCKET)},${Math.floor(z/WALL_BUCKET)}`;
     wallObstacles.forEach((segments,floor)=>{
       const index=new Map();segments.forEach(segment=>{const [a,b]=segment,minX=Math.floor((Math.min(a.x,b.x)-2)/WALL_BUCKET),maxX=Math.floor((Math.max(a.x,b.x)+2)/WALL_BUCKET),minZ=Math.floor((Math.min(a.z,b.z)-2)/WALL_BUCKET),maxZ=Math.floor((Math.max(a.z,b.z)+2)/WALL_BUCKET);for(let x=minX;x<=maxX;x++)for(let z=minZ;z<=maxZ;z++){const key=`${x},${z}`;if(!index.has(key))index.set(key,[]);index.get(key).push(segment)}});wallIndexes.set(floor,index);
@@ -325,6 +353,13 @@
     let target=homeForView(viewMode),desiredTarget=homeForView(viewMode),distance=size*(compact?3.7:2.3),desiredDistance=distance,azimuth=-.78,polar=1.05,focusedHall=null;
     const overviewDistance=distance,minDistance=18,maxDistance=size*5,raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
     let activeRoute=[],selectedDestination=null,framePending=false,travel=0,last=[0,0],dragAction="orbit";const pointers=new Map();
+    let navigationWorker=null,navigationSerial=0,navigationPending=false,lastNavigationResult=null,navigationReady=false,cachedNavigationData=null;
+    // Choose an actual aisle-side arrival, not the solid booth centre.
+    for(const booth of booths){
+      const candidates=[];for(let i=0;i<booth.polygon.length;i++){const a=booth.polygon[i],b=booth.polygon[(i+1)%booth.polygon.length],dx=b.x-a.x,dz=b.z-a.z,len=Math.hypot(dx,dz);if(len<.01)continue;for(const t of [.25,.5,.75])for(const sign of [-1,1]){const p=new THREE.Vector3(a.x+dx*t-sign*dz/len*1.2,.2,a.z+dz*t+sign*dx/len*1.2);if(isWalkable(p,'F1')&&!isWallBlocked(p,'F1'))candidates.push(p)}}
+      candidates.sort((a,b)=>a.distanceToSquared(booth.center)-b.distanceToSquared(booth.center));booth.arrivalCandidates=candidates;if(candidates.length)booth.position.copy(candidates[0]);
+    }
+    document.querySelector('#showBooths').onclick=()=>{setViewMode('F1');focusHall(boothHall)};
     const navigationPanel=document.querySelector('.navigation-panel'),navigationToggle=document.querySelector('#navigationToggle'),mobileLayout=matchMedia('(max-width:720px)');
     function setNavigationCollapsed(collapsed){navigationPanel.classList.toggle('is-collapsed',collapsed);navigationToggle.setAttribute('aria-expanded',String(!collapsed));navigationToggle.textContent=collapsed?'展开导航':'收起';requestRender()}
     setNavigationCollapsed(mobileLayout.matches);
@@ -333,9 +368,10 @@
 
     function setViewMode(mode,{updateUrl=true,manual=false}={}){
       if(!["ALL","F1","F3"].includes(mode))mode="ALL";
-      if(manual&&mode!=="ALL"&&activeRoute.some(node=>node.floor!==mode))clearRoute();
+      if(manual&&(navigationPending||(mode!=="ALL"&&activeRoute.some(node=>node.floor!==mode))))clearRoute();
       viewMode=mode;
       floorModels.forEach(group=>{group.visible=mode==="ALL"||group.userData.floor===mode;group.position.y=floorDisplayOffset(group.userData.floor)});
+      if(lastNavigationResult?.ok)renderNavigation(lastNavigationResult);
       grid.position.y=-2;
       document.querySelectorAll("[data-view]").forEach(link=>{const active=link.dataset.view===mode;link.classList.toggle("active",active);link.setAttribute("aria-current",active?"page":"false")});
       const code=document.querySelector("#viewCode"),name=document.querySelector("#viewName"),hint=document.querySelector("#viewHint");
@@ -352,7 +388,7 @@
     function populateSelects(start){
       const byFloor=floor=>endpoints.filter(node=>node.floor===floor);
       const options=FLOOR_DEFS.map(def=>`<optgroup label="${def.id}">${byFloor(def.id).map(node=>`<option value="${node.id}">${node.label.replace(`${def.id} · `,"")}</option>`).join("")}</optgroup>`).join("");
-      startSelect.innerHTML=options;destinationSelect.innerHTML='<option value="">请选择门、厕所、电梯、扶梯或楼梯</option>'+options;
+      startSelect.innerHTML=options;destinationSelect.innerHTML='<option value="">请选择展位、门、厕所或换层设施</option>'+options;
       if(start)startSelect.value=start.id;clearRouteButton.disabled=true;
     }
     function updateHallRendering(){
@@ -372,69 +408,6 @@
       clearRouteButton.disabled=!selectedDestination&&!activeRoute.length;
       if(selectedDestination){const hall=halls.find(item=>item.floor===selectedDestination.floor&&item.id===selectedDestination.hall);if(hall)focusHall(hall,false)}requestRender();
     }
-    function routeWeights(preference,type){
-      if(type==="walk")return 1;const defaults={elevator:1,escalator:1.08,stairs:1.22};if(preference==="default")return defaults[type]||1;
-      return type===preference?.18:6;
-    }
-    function shortestPath(startId,endId,preference){
-      const distances=new Map([...graph.keys()].map(id=>[id,Infinity])),previous=new Map(),unvisited=new Set(graph.keys());distances.set(startId,0);
-      while(unvisited.size){
-        let current=null,best=Infinity;unvisited.forEach(id=>{const value=distances.get(id);if(value<best){best=value;current=id}});if(current===null||current===endId)break;unvisited.delete(current);
-        graph.get(current).edges.forEach(item=>{if(!unvisited.has(item.to))return;const alt=best+item.weight*routeWeights(preference,item.type);if(alt<distances.get(item.to)){distances.set(item.to,alt);previous.set(item.to,{id:current,type:item.type})}});
-      }
-      if(!previous.has(endId)&&startId!==endId)return null;const ids=[endId],types=[];while(ids[0]!==startId){const step=previous.get(ids[0]);if(!step)return null;types.unshift(step.type);ids.unshift(step.id)}return{nodes:ids.map(id=>graph.get(id).node),types,cost:distances.get(endId)};
-    }
-    function nearestEndpoint(origin,candidates){
-      return candidates.reduce((best,item)=>!best||distance2d(origin.position,item.position)<distance2d(origin.position,best.position)?item:best,null);
-    }
-    function nearestDoor(origin,floor,hall){
-      return nearestEndpoint(origin,endpoints.filter(node=>node.floor===floor&&node.hall===hall&&node.type==="door"));
-    }
-    function nearestReachableDoor(origin,floor,hall){
-      const doors=endpoints.filter(node=>node.floor===floor&&node.hall===hall&&node.type==="door").sort((a,b)=>distance2d(origin.position,a.position)-distance2d(origin.position,b.position));
-      return doors.find(door=>collisionAwarePath(origin.position,door.position,floor))||null;
-    }
-    function chooseConnector(start,end,preference,excludedTypes=new Set()){
-      let candidates=connectorPairs.map(pair=>start.floor==="F1"?{type:pair.type,from:pair.lower,to:pair.upper}:{type:pair.type,from:pair.upper,to:pair.lower}).filter(pair=>pair.to.floor===end.floor&&!excludedTypes.has(pair.type));
-      const sameHall=candidates.filter(pair=>pair.from.hall===start.hall);if(sameHall.length)candidates=sameHall;
-      const assessed=candidates.map(pair=>{
-        const arrivalDoors=pair.to.hall===end.hall?[]:endpoints.filter(node=>node.floor===pair.to.floor&&node.hall===pair.to.hall&&node.type==="door").sort((a,b)=>distance2d(pair.to.position,a.position)-distance2d(pair.to.position,b.position));
-        const arrivalExit=arrivalDoors.find(door=>!movementBlocked(pair.to.position,door.position,pair.to.floor))||arrivalDoors[0]||null;
-        const destinationBonus=pair.to.id===end.id?-10000:0,defaultPenalty={elevator:0,escalator:14,stairs:28}[pair.type]||0,preferencePenalty=preference!=="default"&&pair.type!==preference?10000:0;
-        const blockedPenalty=movementBlocked(start.position,pair.from.position,start.floor)?1200:0,arrivalBlockedPenalty=arrivalExit&&movementBlocked(pair.to.position,arrivalExit.position,pair.to.floor)?1200:0;
-        const score=distance2d(start.position,pair.from.position)+distance2d(pair.to.position,end.position)*.18+defaultPenalty+preferencePenalty+destinationBonus+blockedPenalty+arrivalBlockedPenalty;
-        return{...pair,arrivalExit,score};
-      }).sort((a,b)=>a.score-b.score);
-      return assessed[0]||null;
-    }
-    function ruleBasedRoute(start,end,preference,excludedTypes=new Set()){
-      const nodes=[start],types=[],steps=[];
-      const append=(node,type="walk")=>{if(node&&node.id!==nodes.at(-1).id){types.push(type);nodes.push(node)}};
-      if(start.floor===end.floor&&start.hall===end.hall){
-        append(end);steps.push(`由${start.type==="door"?`${start.number}号门进入场馆`:"当前位置"}前往目标`);
-        return{nodes,types,rule:"同馆导航",steps};
-      }
-      if(start.floor===end.floor){
-        const sourceExit=start.type==="door"?start:nearestReachableDoor(start,start.floor,start.hall),targetEntry=end.type==="door"?end:nearestReachableDoor(end,end.floor,end.hall);
-        if(!sourceExit||!targetEntry)return null;
-        append(sourceExit);append(targetEntry);append(end);
-        steps.push(`从${start.hall}馆${sourceExit.number}号门出馆`,`经${start.floor}公共区域步行`,`由${end.hall}馆${targetEntry.number}号门进入`);
-        return{nodes,types,rule:"同层跨馆",steps};
-      }
-      const connector=chooseConnector(start,end,preference,excludedTypes);if(!connector)return null;
-      const connectorName=TYPES.find(type=>type.key===connector.type)?.label||connector.type;
-      append(connector.from);append(connector.to,connector.type);
-      steps.push(`前往${start.hall}馆${connectorName}${connector.from.index}号`,`乘${connectorName}到${end.floor}`);
-      if(connector.to.hall!==end.hall){
-        const arrivalExit=connector.arrivalExit||nearestReachableDoor(connector.to,connector.to.floor,connector.to.hall),targetEntry=end.type==="door"?end:nearestReachableDoor(end,end.floor,end.hall);
-        if(!arrivalExit||!targetEntry)return null;
-        append(arrivalExit);append(targetEntry);append(end);
-        steps.push(`从${connector.to.hall}馆${arrivalExit.number}号门出馆`,`经${end.floor}公共区域步行`,`由${end.hall}馆${targetEntry.number}号门进入`);
-      }else{
-        append(end);steps.push(`在${end.hall}馆内前往目标`);
-      }
-      return{nodes,types,rule:"跨层导航",steps,connector:connector.type};
-    }
     function pointInPolygon(point,polygon){
       let inside=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const a=polygon[i],b=polygon[j],cross=(a.z>point.z)!==(b.z>point.z)&&point.x<(b.x-a.x)*(point.z-a.z)/(b.z-a.z||1e-9)+a.x;if(cross)inside=!inside}return inside;
     }
@@ -451,66 +424,78 @@
       const orient=(p,q,r)=>(q.x-p.x)*(r.z-p.z)-(q.z-p.z)*(r.x-p.x),o1=orient(a,b,c),o2=orient(a,b,d),o3=orient(c,d,a),o4=orient(c,d,b);return o1*o2<0&&o3*o4<0;
     }
     function movementBlocked(from,to,floor){
+      if(floor==='F1')for(const booth of booths){if(Math.max(from.x,to.x)<booth.bounds.min.x||Math.min(from.x,to.x)>booth.bounds.max.x||Math.max(from.z,to.z)<booth.bounds.min.z||Math.min(from.z,to.z)>booth.bounds.max.z)continue;if(pointInPolygon(from,booth.polygon)||pointInPolygon(to,booth.polygon)||booth.polygon.some((p,i)=>segmentsIntersect(from,to,p,booth.polygon[(i+1)%booth.polygon.length])))return true}
       const index=wallIndexes.get(floor);if(!index)return false;const minX=Math.floor(Math.min(from.x,to.x)/WALL_BUCKET),maxX=Math.floor(Math.max(from.x,to.x)/WALL_BUCKET),minZ=Math.floor(Math.min(from.z,to.z)/WALL_BUCKET),maxZ=Math.floor(Math.max(from.z,to.z)/WALL_BUCKET),seen=new Set();
       for(let x=minX;x<=maxX;x++)for(let z=minZ;z<=maxZ;z++)for(const segment of index.get(`${x},${z}`)||[]){if(seen.has(segment))continue;seen.add(segment);if(segmentsIntersect(from,to,segment[0],segment[1]))return true}return false;
     }
-    const gridPoint=(gx,gz,floor)=>new THREE.Vector3(modelBounds.min.x+gx*GRID_STEP,.2,modelBounds.min.z+gz*GRID_STEP);
-    function nearestGrid(point,floor){
-      const baseX=Math.round((point.x-modelBounds.min.x)/GRID_STEP),baseZ=Math.round((point.z-modelBounds.min.z)/GRID_STEP);
-      for(let radius=0;radius<15;radius++)for(let dx=-radius;dx<=radius;dx++)for(let dz=-radius;dz<=radius;dz++){if(radius&&Math.abs(dx)!==radius&&Math.abs(dz)!==radius)continue;const p=gridPoint(baseX+dx,baseZ+dz,floor);if(isWalkable(p,floor)&&!isWallBlocked(p,floor))return{gx:baseX+dx,gz:baseZ+dz,point:p}}return null;
-    }
-    function collisionAwarePath(from,to,floor){
-      const start=nearestGrid(from,floor),goal=nearestGrid(to,floor);if(!start||!goal)return null;
-      const key=(x,z)=>`${x},${z}`,startKey=key(start.gx,start.gz),goalKey=key(goal.gx,goal.gz),open=new Set([startKey]),nodes=new Map([[startKey,start]]),g=new Map([[startKey,0]]),f=new Map([[startKey,Math.hypot(start.gx-goal.gx,start.gz-goal.gz)]]),came=new Map();let iterations=0;
-      const directions=[[-1,0,1],[1,0,1],[0,-1,1],[0,1,1],[-1,-1,1.414],[-1,1,1.414],[1,-1,1.414],[1,1,1.414]];
-      while(open.size&&iterations++<30000){
-        let current=null,best=Infinity;open.forEach(id=>{const score=f.get(id)??Infinity;if(score<best){best=score;current=id}});if(current===goalKey){const result=[];let cursor=current;while(cursor){result.unshift(nodes.get(cursor).point);cursor=came.get(cursor)}const exactStart=isWalkable(from,floor)&&!isWallBlocked(from,floor)&&!movementBlocked(from,result[0],floor),exactEnd=isWalkable(to,floor)&&!isWallBlocked(to,floor)&&!movementBlocked(result.at(-1),to,floor);if(exactStart)result.unshift(from.clone());if(exactEnd)result.push(to.clone());return result}
-        open.delete(current);const node=nodes.get(current);
-        for(const [dx,dz,cost] of directions){const gx=node.gx+dx,gz=node.gz+dz,id=key(gx,gz),point=gridPoint(gx,gz,floor);if(!isWalkable(point,floor)||isWallBlocked(point,floor)||movementBlocked(node.point,point,floor))continue;const tentative=(g.get(current)||0)+cost;if(tentative>=(g.get(id)??Infinity))continue;nodes.set(id,{gx,gz,point});came.set(id,current);g.set(id,tentative);f.set(id,tentative+Math.hypot(gx-goal.gx,gz-goal.gz));open.add(id)}
-      }return null;
-    }
-    function simplifyGridPath(points){
-      if(points.length<3)return points;const result=[points[0]];for(let i=1;i<points.length-1;i++){const a=result.at(-1),b=points[i],c=points[i+1],cross=(b.x-a.x)*(c.z-b.z)-(b.z-a.z)*(c.x-b.x);if(Math.abs(cross)>.01)result.push(b)}result.push(points.at(-1));return result;
-    }
-    function collisionAwareRoute(result){
-      const points=[];for(let index=0;index<result.nodes.length-1;index++){const from=result.nodes[index],to=result.nodes[index+1];if(from.floor!==to.floor){const fromPoint=displayedPosition(from.position,from.floor),toPoint=displayedPosition(to.position,to.floor);if(!points.length||!points.at(-1).equals(fromPoint))points.push(fromPoint);points.push(toPoint);continue}const section=collisionAwarePath(from.position,to.position,from.floor);if(!section){result.failedSegment={from,to};return null}const simplified=simplifyGridPath(section).map(point=>displayedPosition(point,from.floor));points.push(...(points.length?simplified.slice(1):simplified))}return points;
-    }
-    function drawRoute(result){
-      routeGroup.clear();if(!result)return false;const points=collisionAwareRoute(result);if(!points||!points.length)return false;if(points.length===1)points.push(points[0].clone().add(new THREE.Vector3(0,.1,0)));
-      const curve=new THREE.CatmullRomCurve3(points,false,"centripetal",.12),tube=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(24,points.length*14),.72,7,false),new THREE.MeshBasicMaterial({color:0xffd35b,transparent:true,opacity:.96}));routeGroup.add(tube);
-      [points[0],points.at(-1)].forEach((point,index)=>{const marker=new THREE.Mesh(new THREE.SphereGeometry(index?2.2:1.7,18,12),new THREE.MeshBasicMaterial({color:index?0xff7a68:0x5ff1d2}));marker.position.copy(point);routeGroup.add(marker)});
-      return true;
+    const plainPoint=p=>({x:p.x,z:p.z});
+    const plainEndpoint=n=>({id:n.id,floor:n.floor,hall:n.hall,type:n.type,position:plainPoint(n.position),arrivalCandidates:n.arrivalCandidates?.map(plainPoint)});
+    function navigationData(){return{floors:FLOOR_DEFS.map(def=>({id:def.id,rooms:endpoints.filter(n=>n.floor===def.id&&n.navigationPolygon).map(n=>({id:n.id,hall:n.hall,poly:n.navigationPolygon.map(plainPoint)})),ground:walkableByFloor.get(def.id).ground.map(poly=>poly.map(plainPoint)),blocked:walkableByFloor.get(def.id).blocked.map(poly=>poly.map(plainPoint)),mid:halls.find(h=>h.floor===def.id&&h.id==='mid')?.navPolygons.map(poly=>poly.map(plainPoint))||[],halls:halls.filter(h=>h.floor===def.id&&h.id!=='mid').map(h=>({id:h.id,polygon:h.navPolygons[0].map(plainPoint)})),walls:wallObstacles.get(def.id).map(line=>line.map(plainPoint)),doors:endpoints.filter(n=>n.floor===def.id&&n.type==='door').map(n=>({hall:n.hall,line:n.line.map(plainPoint)}))})),connectors:connectorPairs.map(c=>({type:c.type,lower:plainEndpoint(c.lower),upper:plainEndpoint(c.upper)}))}}
+    function disposeRoute(){routeGroup.traverse(object=>{object.geometry?.dispose();object.material?.dispose()});routeGroup.clear();delete routeGroup.userData.navigation;requestRender()}
+    function cancelNavigation(){navigationSerial++;if(navigationPending){navigationWorker?.terminate();navigationWorker=null;navigationReady=false}navigationPending=false;document.querySelector('#routeButton').disabled=false;document.querySelector('#routeButton').textContent='开始导航';activeRoute=[];lastNavigationResult=null;disposeRoute()}
+    function renderNavigation(result){
+      disposeRoute();const segments=[];for(const section of result.sections){const points=section.points.map((p,i)=>displayedPosition(new THREE.Vector3(p.x,.2,p.z),section.type==='walk'?section.floor:i?section.toFloor:section.fromFloor));for(let i=1;i<points.length;i++)if(points[i].distanceTo(points[i-1])>.0001)segments.push([points[i-1],points[i]])}
+      if(segments.length){const mesh=new THREE.InstancedMesh(new THREE.CylinderGeometry(.16,.16,1,6),new THREE.MeshBasicMaterial({color:0xffd35b}),segments.length),dummy=new THREE.Object3D(),up=new THREE.Vector3(0,1,0);segments.forEach(([a,b],i)=>{const delta=b.clone().sub(a);dummy.position.copy(a).add(b).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(up,delta.clone().normalize());dummy.scale.set(1,delta.length(),1);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix)});routeGroup.add(mesh)}
+      const first=result.sections[0],last=result.sections.at(-1);for(const [section,p,floor,color] of [[first,first.points[0],first.floor,0x5ff1d2],[last,last.points.at(-1),last.floor,0xff7a68]]){const marker=new THREE.Mesh(new THREE.SphereGeometry(.8,12,8),new THREE.MeshBasicMaterial({color}));marker.position.copy(displayedPosition(new THREE.Vector3(p.x,.3,p.z),floor));routeGroup.add(marker)}
+      routeGroup.userData.navigation=result;
     }
     function planRoute(){
-      const start=endpoints.find(node=>node.id===startSelect.value),end=endpoints.find(node=>node.id===destinationSelect.value);if(!start||!end){routeSummary.textContent="请先选择导航终点";return}
-      const requiredView=start.floor===end.floor?start.floor:"ALL";if(requiredView!==viewMode)setViewMode(requiredView,{updateUrl:true});
-      const preference=document.querySelector('input[name="routePreference"]:checked').value;let result=ruleBasedRoute(start,end,preference),routeDrawn=drawRoute(result);
-      if(result&&!routeDrawn&&start.floor!==end.floor&&preference!=="default"){
-        result=ruleBasedRoute(start,end,"default",new Set([preference]));if(result)result.fallbackFrom=preference;routeDrawn=drawRoute(result);
-      }
-      activeRoute=result?.nodes||[];setDestination(end.id);updateHallRendering();
-      if(!result){routeState.textContent="不可达";routeState.classList.remove("active");routeSummary.textContent="当前数据中没有可用的跨层连接";return}
-      if(!routeDrawn){activeRoute=[];updateHallRendering();routeState.textContent="不可达";routeState.classList.remove("active");routeSummary.textContent=result.failedSegment?`${result.failedSegment.from.label} → ${result.failedSegment.to.label} 被墙体或地面边界阻挡`:"墙体或地面边界阻挡了当前路线，请更换终点或换层方式";return}
-      const vertical=result.types.find(type=>CONNECTORS.has(type)),preferenceNames={default:"默认",elevator:"优先电梯",escalator:"优先扶梯",stairs:"优先楼梯"};
-      routeState.textContent="导航中";routeState.classList.add("active");clearRouteButton.disabled=false;
-      if(mobileLayout.matches)setNavigationCollapsed(true);
-      const fallback=result.fallbackFrom?`（${preferenceNames[result.fallbackFrom]}不可达，已自动改道）`:"";
-      routeSummary.textContent=`${result.rule} · ${preferenceNames[preference]}${fallback}${vertical?` · 经${TYPES.find(type=>type.key===vertical)?.label||vertical}`:""}｜${result.steps.join(" → ")}`;
-      const displayedStart=displayedPosition(start.position,start.floor),displayedEnd=displayedPosition(end.position,end.floor);desiredTarget.copy(displayedStart).add(displayedEnd).multiplyScalar(.5);desiredDistance=Math.max(size*.55,displayedStart.distanceTo(displayedEnd)*1.35);requestRender();
+      const start=endpoints.find(n=>n.id===startSelect.value),end=endpoints.find(n=>n.id===destinationSelect.value);cancelNavigation();if(!start||!end){routeState.textContent='未开始';routeSummary.textContent='请先选择导航起点和终点';return}
+      const requiredView=start.floor===end.floor?start.floor:'ALL';if(requiredView!==viewMode)setViewMode(requiredView);
+      const id=++navigationSerial,preference=document.querySelector('input[name="routePreference"]:checked').value;
+      setDestination(end.id);routeState.textContent='规划中';routeState.classList.remove('active');routeSummary.textContent='正在检查馆—道路—馆连通性，禁止借道第三馆和中央商务区…';navigationPending=true;clearRouteButton.disabled=false;document.querySelector('#routeButton').disabled=true;document.querySelector('#routeButton').textContent='规划中…';
+      const fail=message=>{if(id!==navigationSerial)return;navigationWorker?.terminate();navigationWorker=null;navigationPending=false;document.querySelector('#routeButton').disabled=false;document.querySelector('#routeButton').textContent='重新规划';routeState.textContent='未连通';routeSummary.textContent=message;lastNavigationResult={ok:false,reason:message};if(mobileLayout.matches)setNavigationCollapsed(false);requestRender()};
+      try{if(!navigationWorker){navigationWorker=new Worker('./navigation-worker.js?v=20260908-2');navigationReady=false}}catch(error){fail('当前浏览器未能启动寻路，请使用HTTP地址刷新地图。');return}
+      const worker=navigationWorker,sendPlan=()=>worker.postMessage({id,start:plainEndpoint(start),end:plainEndpoint(end),preference});
+      navigationWorker.onerror=()=>fail('导航计算失败，请刷新后重试。');navigationWorker.onmessage=event=>{if(id!==navigationSerial||event.data.id!==id||worker!==navigationWorker)return;const message=event.data;if(message.error){fail(message.error);return}if(message.ready){navigationReady=true;sendPlan();return}
+        const result=message.result;navigationPending=false;document.querySelector('#routeButton').disabled=false;document.querySelector('#routeButton').textContent='开始导航';lastNavigationResult=result;
+        if(!result?.ok||!result.audit?.valid){fail(result?.reason||'路线校验未通过，已停止显示。');return}
+        renderNavigation(result);activeRoute=[start,end];routeState.textContent='导航中';routeState.classList.add('active');
+        const connectorName=TYPES.find(t=>t.key===result.connector)?.label;
+        routeSummary.textContent=`${result.rule}｜${start.label} → ${end.label}｜平面步行约${Math.round(result.distance)}米${connectorName?`｜经${connectorName}`:''}${result.fallback?'（首选设施不通，已换用可达设施）':''}${result.unconfirmed?'｜跨层配对为演示，需现场核实':''}`;
+        if(mobileLayout.matches)setNavigationCollapsed(true);const a=displayedPosition(start.position,start.floor),b=displayedPosition(end.position,end.floor);desiredTarget.copy(a).add(b).multiplyScalar(.5);desiredDistance=Math.max(size*.55,a.distanceTo(b)*1.35);requestRender();
+      };
+      if(navigationReady)sendPlan();else worker.postMessage({id,action:'init',data:cachedNavigationData||(cachedNavigationData=navigationData())});
     }
-    function clearRoute(){routeGroup.clear();activeRoute=[];selectedDestination=null;destinationSelect.value="";endpoints.forEach(node=>node.element.classList.remove("selected"));routeState.textContent="未开始";routeState.classList.remove("active");const start=endpoints.find(node=>node.id===startSelect.value);routeSummary.textContent=start?`当前起点：${start.label}`:"请选择导航起点";clearRouteButton.disabled=true;focusHall(null,false);requestRender()}
-    document.querySelector("#routeButton").addEventListener("click",planRoute);clearRouteButton.addEventListener("click",clearRoute);destinationSelect.addEventListener("change",()=>setDestination(destinationSelect.value));
-    document.querySelectorAll('input[name="routePreference"]').forEach(input=>input.addEventListener("change",()=>{if(activeRoute.length)planRoute()}));
+    function clearRoute(){cancelNavigation();selectedDestination=null;destinationSelect.value="";endpoints.forEach(node=>node.element.classList.remove("selected"));routeState.textContent="未开始";routeState.classList.remove("active");const start=endpoints.find(node=>node.id===startSelect.value);routeSummary.textContent=start?`当前起点：${start.label}`:"请选择导航起点";clearRouteButton.disabled=true;focusHall(null,false);requestRender()}
+    document.querySelector("#routeButton").addEventListener("click",planRoute);clearRouteButton.addEventListener("click",clearRoute);destinationSelect.addEventListener("change",()=>{cancelNavigation();setDestination(destinationSelect.value);routeState.textContent='未开始';routeState.classList.remove('active');routeSummary.textContent='终点已更新，点击开始导航'});startSelect.addEventListener('change',()=>{cancelNavigation();routeState.textContent='未开始';routeState.classList.remove('active');routeSummary.textContent='起点已更新，点击开始导航'});
+    document.querySelectorAll('input[name="routePreference"]').forEach(input=>input.addEventListener("change",()=>{if(activeRoute.length||navigationPending)planRoute()}));
     document.querySelector("#fitButton").addEventListener("click",()=>{focusHall(null,false);desiredTarget.copy(homeForView(viewMode));desiredDistance=overviewDistance;requestRender()});
     document.querySelectorAll("[data-view]").forEach(link=>link.addEventListener("click",event=>{event.preventDefault();setViewMode(link.dataset.view,{updateUrl:true,manual:true})}));
 
     function pan(dx,dy){const wpp=2*distance*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/Math.max(stage.clientHeight,1),forward=new THREE.Vector3(-Math.sin(azimuth),0,-Math.cos(azimuth)).normalize(),right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0)).normalize();desiredTarget.addScaledVector(right,-dx*wpp).addScaledVector(forward,dy*wpp)}
     canvas.addEventListener("contextmenu",event=>event.preventDefault());
-    canvas.addEventListener("pointerdown",event=>{if(event.button>2)return;event.preventDefault();canvas.setPointerCapture(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});last=[event.clientX,event.clientY];travel=0;dragAction=event.pointerType==="mouse"?(event.button===2?"orbit":"pan"):"orbit"});
-    canvas.addEventListener("pointermove",event=>{if(!pointers.has(event.pointerId))return;const before=[...pointers.values()],prev=pointers.get(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});const dx=event.clientX-prev.x,dy=event.clientY-prev.y;travel+=Math.hypot(dx,dy);if(pointers.size>1){const after=[...pointers.values()],oldSpan=Math.hypot(before[0].x-before[1].x,before[0].y-before[1].y),span=Math.hypot(after[0].x-after[1].x,after[0].y-after[1].y);pan(dx/2,dy/2);if(span>5&&oldSpan>5)desiredDistance=THREE.MathUtils.clamp(desiredDistance*oldSpan/span,minDistance,maxDistance)}else if(dragAction==="pan")pan(dx,dy);else{azimuth-=dx*.006;polar=THREE.MathUtils.clamp(polar+dy*.005,.35,1.28)}requestRender()});
-    const pointerUp=event=>{pointers.delete(event.pointerId);try{canvas.releasePointerCapture(event.pointerId)}catch(_){}};canvas.addEventListener("pointerup",pointerUp);canvas.addEventListener("pointercancel",pointerUp);
+    canvas.addEventListener("pointerdown",event=>{
+      if(event.button>2)return;event.preventDefault();
+      if(!pointers.size)travel=0;else travel=Math.max(travel,7);
+      canvas.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+      dragAction=event.pointerType==="mouse"&&event.button===2?"orbit":"pan";
+    });
+    canvas.addEventListener("pointermove",event=>{
+      if(!pointers.has(event.pointerId))return;
+      const before=[...pointers.values()],prev=pointers.get(event.pointerId);
+      pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+      const dx=event.clientX-prev.x,dy=event.clientY-prev.y;travel+=Math.hypot(dx,dy);
+      if(pointers.size===2){
+        const after=[...pointers.values()],oldX=before[1].x-before[0].x,oldY=before[1].y-before[0].y,newX=after[1].x-after[0].x,newY=after[1].y-after[0].y;
+        const oldSpan=Math.hypot(oldX,oldY),span=Math.hypot(newX,newY);
+        if(span>20&&oldSpan>20){
+          desiredDistance=THREE.MathUtils.clamp(desiredDistance*oldSpan/span,minDistance,maxDistance);
+          const angle=Math.atan2(newY,newX)-Math.atan2(oldY,oldX);
+          azimuth+=Math.atan2(Math.sin(angle),Math.cos(angle));
+        }
+      }else if(pointers.size===1){
+        if(dragAction==="pan")pan(dx,dy);
+        else{azimuth-=dx*.006;polar=THREE.MathUtils.clamp(polar+dy*.005,.35,1.28)}
+      }
+      requestRender();
+    });
+    const pointerUp=event=>{if(event.type!=="pointerup")travel=Math.max(travel,7);pointers.delete(event.pointerId);try{canvas.releasePointerCapture(event.pointerId)}catch(_){}};
+    canvas.addEventListener("pointerup",pointerUp);canvas.addEventListener("pointercancel",pointerUp);
+    canvas.addEventListener("lostpointercapture",event=>{if(pointers.has(event.pointerId)){pointers.delete(event.pointerId);travel=Math.max(travel,7)}});
     canvas.addEventListener("wheel",event=>{event.preventDefault();desiredDistance=THREE.MathUtils.clamp(desiredDistance*Math.exp(event.deltaY*.001),minDistance,maxDistance);requestRender()},{passive:false});
-    canvas.addEventListener("click",event=>{if(travel>6)return;const rect=canvas.getBoundingClientRect();pointer.x=(event.clientX-rect.left)/rect.width*2-1;pointer.y=-(event.clientY-rect.top)/rect.height*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(halls.filter(hall=>viewMode==="ALL"||hall.floor===viewMode).map(hall=>hall.coverMesh?.visible?hall.coverMesh:hall.floorMesh).filter(Boolean),false)[0];if(hit){const hall=halls.find(item=>item.id===hit.object.userData.hall&&item.floor===hit.object.userData.floor);if(hall)focusHall(hall)}});
+    canvas.addEventListener("click",event=>{if(travel>6)return;const rect=canvas.getBoundingClientRect();pointer.x=(event.clientX-rect.left)/rect.width*2-1;pointer.y=-(event.clientY-rect.top)/rect.height*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects([...halls.filter(hall=>viewMode==="ALL"||hall.floor===viewMode).map(hall=>hall.coverMesh?.visible?hall.coverMesh:hall.floorMesh).filter(Boolean),...((viewMode==='F1'||viewMode==='ALL')&&boothHall.detailed?booths.map(b=>b.mesh):[])],false)[0];if(hit?.object.userData.booth){openBooth(hit.object.userData.booth);return}if(hit){closeBooth();const hall=halls.find(item=>item.id===hit.object.userData.hall&&item.floor===hit.object.userData.floor);if(hall)focusHall(hall)}});
 
     function resize(){const rect=stage.getBoundingClientRect();renderer.setSize(rect.width,rect.height,false);camera.aspect=rect.width/rect.height;camera.updateProjectionMatrix();requestRender()}
     function requestRender(){if(!framePending){framePending=true;requestAnimationFrame(tick)}}
@@ -525,7 +510,7 @@
       halls.forEach(hall=>{hall.label.style.display="none";if((viewMode!=="ALL"&&hall.floor!==viewMode)||distance<size*.45)return;const {anchor,p,x,y}=project(hall.center.clone().add(new THREE.Vector3(0,4,0)),hall.floor),w=hall.id==="mid"?100:66,h=30;if(p.z<=-1||p.z>=1||x<w/2||x>rect.width-w/2||y<20||y>rect.height-20||overlaps(x,y,w,h)||occluded(anchor,hall.floor))return;hall.label.style.display="block";hall.label.style.left=x+"px";hall.label.style.top=y+"px";occupied.push({x,y,w,h})});
       FLOOR_DEFS.forEach(def=>{const group=floorGroups.get(def.id);if(!group)return;if(viewMode!=="ALL"&&def.id!==viewMode){group.userData.badge.style.display="none";return}group.userData.badge.style.display="block";const p=displayedPosition(group.userData.badgePosition,def.id).project(camera),x=(p.x*.5+.5)*rect.width,y=(-p.y*.5+.5)*rect.height;group.userData.badge.style.left=x+"px";group.userData.badge.style.top=y+"px"});
       const priority={accessible:9,elevator:8,door:7,escalator:6,stairs:5,male:4,female:4},candidates=[];
-      endpoints.forEach(node=>{node.element.style.display="none";if(viewMode!=="ALL"&&node.floor!==viewMode)return;const hall=halls.find(h=>h.floor===node.floor&&h.id===node.hall);if(!hall?.detailed)return;
+      endpoints.forEach(node=>{node.element.style.display="none";if(node.type==='booth')return;if(viewMode!=="ALL"&&node.floor!==viewMode)return;const hall=halls.find(h=>h.floor===node.floor&&h.id===node.hall);if(!hall?.detailed)return;
         const height=node.type==="elevator"?3.1:CONNECTORS.has(node.type)?1.45:node.type==="door"?2.7:.45;
         const {anchor,p,x,y}=project(node.position.clone().setY(height),node.floor),near=camera.position.distanceTo(anchor),important=node===selectedDestination||node.id===startSelect.value;
         if(p.z<=-1||p.z>=1||x<22||x>rect.width-22||y<22||y>rect.height-22)return;
@@ -535,11 +520,16 @@
       candidates.sort((a,b)=>b.score-a.score||a.near-b.near||a.node.id.localeCompare(b.node.id));let markerCount=0;
       const iconLimit=distance<size*.25?Infinity:distance<size*.5?30:12;
       for(const c of candidates){if(markerCount>=iconLimit)break;if(overlaps(c.x,c.y,28,28)||occluded(c.anchor,c.node.floor))continue;c.node.element.style.display="grid";c.node.element.style.left=c.x+"px";c.node.element.style.top=c.y+"px";occupied.push({x:c.x,y:c.y,w:28,h:28});markerCount++}
+      if(boothHall.detailed&&(viewMode==='F1'||viewMode==='ALL'))for(const booth of [...booths].sort((a,b)=>(b===selectedBooth?1:0)-(a===selectedBooth?1:0)||b.bounds.getSize(new THREE.Vector3()).length()-a.bounds.getSize(new THREE.Vector3()).length())){
+        const {anchor,p,x,y}=project(booth.center,'F1');if(p.z<=-1||p.z>=1||x<0||y<0||x>rect.width||y>rect.height||occluded(anchor,'F1'))continue;
+        const projected=booth.polygon.map(v=>project(v.clone().setY(1.6),'F1')),w=(Math.max(...projected.map(v=>v.x))-Math.min(...projected.map(v=>v.x)))*.80,h=Math.max(...projected.map(v=>v.y))-Math.min(...projected.map(v=>v.y)),font=Math.min(14,Math.floor(w/(booth.shortName.length+.6)),Math.floor(h/2.8));
+        if(font<9||overlaps(x,y,Math.min(w,font*6),font*2.6))continue;const el=booth.element;el.style.display='block';el.style.left=x+'px';el.style.top=y+'px';el.style.width=w+'px';el.style.fontSize=font+'px';occupied.push({x,y,w:Math.min(w,font*6),h:font*2.6});
+      }
       canvas.dataset.diagnostics=JSON.stringify({view:viewMode,distance:Math.round(distance),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,icons:markerCount,detailAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&h.detailed).length,coverAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&!h.detailed).length,floors:floorModels.map(g=>({floor:g.userData.floor,y:g.position.y,visible:g.visible})),hallCount:halls.filter(h=>h.id!=="mid").length,facilityCount:endpoints.length});
       if(target.distanceToSquared(desiredTarget)>.001||Math.abs(distance-desiredDistance)>.02)requestRender();
     }
-    window.venueDiagnostics={renderer,scene,camera,halls,endpoints,floorGroups,standard:MODEL_STANDARD,get view(){return viewMode},get distance(){return distance},setView:setViewMode,focus:focusHall,zoom(value){desiredDistance=value;requestRender()},render:requestRender};
-    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.filter(h=>h.id!=="mid").length} 个展馆、2 个中央商务区、${endpoints.length} 个设施终点`;requestRender();
+    window.venueDiagnostics={renderer,scene,camera,halls,endpoints,floorGroups,standard:MODEL_STANDARD,navigationData,get navigation(){return lastNavigationResult},get view(){return viewMode},get distance(){return distance},setView:setViewMode,focus:focusHall,zoom(value){desiredDistance=value;requestRender()},render:requestRender};
+    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.filter(h=>h.id!=="mid").length} 个展馆、2 个中央商务区、${endpoints.length-booths.length} 个设施、${booths.length} 个展位`;requestRender();
   }
   start().catch(error=>{console.error(error);loading.textContent=error.message;status.textContent="多层地图生成失败"});
 })();

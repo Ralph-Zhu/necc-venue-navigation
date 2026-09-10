@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="194 2742 2833 1322" width="2833" height="1322"><style>path[id^="FLOOR"]{fill:#f8fafb}path[id^="WALL"],g[id^="WALL"] path{fill:none;stroke:#697c88;stroke-width:2.6}line[id*="DOOR"]{stroke:#139d91}</style><g transform="matrix(1 0 0 1 0 0)"><g xmlns="http://www.w3.org/2000/svg" id="3.2">
+<path id="FLOOR__F3__H3.2" d="M2997 3905.5L300 3905.9V2844H2451L2539.5 2932.5V3016.5H2635.5L2817 3198V3384H2997V3905.5Z" fill="#CA0808" fill-opacity="0.2"/>
+<g id="DOOR__F3__H3.2">
+<line id=" DOORS__F3__H3.2__01å·å‡ºå…¥å£" x1="2823" y1="3906.5" x2="2989" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__02å·å‡ºå…¥å£" x1="2558" y1="3906.5" x2="2628" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__03å·å‡ºå…¥å£" x1="2284" y1="3906.5" x2="2354" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__04å·å‡ºå…¥å£" x1="1924" y1="3906.5" x2="2087" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__05å·å‡ºå…¥å£" x1="1653" y1="3906.5" x2="1726" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__06å·å‡ºå…¥å£" x1="1382" y1="3906.5" x2="1452" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__07å·å‡ºå…¥å£" x1="1022" y1="3906.5" x2="1185" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__08å·å‡ºå…¥å£" x1="754" y1="3906.5" x2="824" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__09å·å‡ºå…¥å£" x1="480" y1="3906.5" x2="550" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__10å·å‡ºå…¥å£" x1="300" y1="3906.5" x2="331" y2="3906.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__11å·å‡ºå…¥å£" x1="300.5" y1="3729" x2="300.5" y2="3655" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__12å·å‡ºå…¥å£" x1="300.5" y1="3464" x2="300.5" y2="3381" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__13å·å‡ºå…¥å£" x1="300.5" y1="3370" x2="300.5" y2="3284" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__14å·å‡ºå…¥å£" x1="300.5" y1="3093" x2="300.5" y2="3021" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__15å·å‡ºå…¥å£" x1="541" y1="2843.5" x2="515" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__16å·å‡ºå…¥å£" x1="811" y1="2843.5" x2="765" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__17å·å‡ºå…¥å£" x1="1181" y1="2843.5" x2="1023" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__18å·å‡ºå…¥å£" x1="1443" y1="2843.5" x2="1415" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__19å·å‡ºå…¥å£" x1="1711" y1="2843.5" x2="1667" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__20å·å‡ºå…¥å£" x1="2086" y1="2843.5" x2="1923" y2="2843.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__21å·å‡ºå…¥å£" x1="2622" y1="3015.5" x2="2540" y2="3015.5" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H3.2__22å·å‡ºå…¥å£" x1="2982" y1="3382.5" x2="2817" y2="3382.5" stroke="#00D0EB" stroke-width="5"/>
+</g>
+<g id="STAIRS__F3__H3.2">
+<rect id="STAIRS__F3__H3.2_13" x="373" y="2772" width="142" height="72" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_12" x="229" y="3094" width="71" height="103" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_11" x="229" y="3560" width="71" height="95" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_10" x="365" y="3957" width="115" height="50" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_09" x="824" y="3945" width="124" height="62" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_08" x="1265" y="3952" width="117" height="55" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_07" x="1726" y="3946" width="124" height="61" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_06" x="2167" y="3952" width="117" height="55" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_05" x="811" y="2772" width="106" height="72" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_04" x="1298" y="2772" width="117" height="72" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_03" x="1711" y="2772" width="105" height="72" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_02" x="2176" y="2772" width="89" height="72" fill="#722B2B"/>
+<rect id="STAIRS__F3__H3.2_01" x="2656" y="3957" width="89" height="50" fill="#722B2B"/>
+</g>
+<g id="WC_FEMALE__F3__H3.2">
+<rect id="WC_FEMALE__F3__H3.2_06" x="1486" y="2773" width="83" height="71" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H3.2_05" x="584" y="2773" width="83" height="71" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H3.2_04" x="230" y="3465" width="70" height="95" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H3.2_03" x="365" y="3906" width="115" height="50" fill="#DC64CE"/>
+<path id="WC_FEMALE__F3__H3.2_02" d="M1312 3950.94V3906H1291.74V3929.23H1186V4007H1263.58V3950.94H1312Z" fill="#DC64CE"/>
+<path id="WC_FEMALE__F3__H3.2_01" d="M2213 3950.94V3906H2192.74V3929.23H2087V4007H2164.58V3950.94H2213Z" fill="#DC64CE"/>
+</g>
+<g id="WC_MALE__F3__H3.2">
+<path id="WC_MALE__F3__H3.2_06" d="M1569 2772.5V2844H1578.5V2818.5H1608V2793H1667V2772.5H1569Z" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H3.2_05" d="M667 2772.5V2844H676.5V2818.5H706V2793H765V2772.5H667Z" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H3.2_04" x="229" y="3198" width="71" height="84" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H3.2_03" d="M894 3944.5C894.167 3931.83 894.4 3906.4 894 3906H913.5V3930H1022V4007H948.5V3944.5H894Z" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H3.2_02" d="M1796 3944.5C1796.17 3931.83 1796.4 3906.4 1796 3906H1815.5V3930H1924V4007H1850.5V3944.5H1796Z" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H3.2_01" x="2656" y="3906" width="89" height="51" fill="#79A2F4"/>
+</g>
+<g id="WC_ACCESSIBLE__F3__H3.2">
+<rect id="WC_ACCESSIBLE__F3__H3.2_06" x="2167" y="3906" width="26" height="22" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H3.2_05" x="1815" y="3906" width="35" height="23" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H3.2_04" x="1264" y="3906" width="28" height="23" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H3.2_03" x="913" y="3906" width="35" height="23" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H3.2_02" x="676" y="2819" width="30" height="24" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H3.2_01" x="1578" y="2819" width="30" height="24" fill="#6FA24E"/>
+</g>
+<g id="ESCALATORS__F3__H3.2">
+<rect id="ESCALATORS__F3__H3.2_04" x="2376" y="3936" width="156" height="32" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H3.2_03" x="1476" y="3936" width="156" height="32" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H3.2_02" x="574" y="3936" width="156" height="32" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H3.2_01" x="2639.63" y="3049" width="193" height="32" transform="rotate(45 2639.63 3049)" fill="#DFB568"/>
+</g>
+<g id="ELEVATORS__F3__H3.2">
+<g id="ELEVATORS__F3__H3.2_08">
+<path d="M2788 3937H2814V3963H2788V3937Z" fill="#0E3C80"/>
+<path d="M2788 3966H2814V3992H2788V3966Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H3.2_07">
+<path d="M274 3917H300V3943H274V3917Z" fill="#0E3C80"/>
+<path d="M274 3946H300V3972H274V3946Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H3.2_06">
+<path d="M547 2781H573V2807H547V2781Z" fill="#0E3C80"/>
+<path d="M547 2810H573V2836H547V2810Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H3.2_05">
+<path d="M1454 2781H1480V2807H1454V2781Z" fill="#0E3C80"/>
+<path d="M1454 2810H1480V2836H1454V2810Z" fill="#0E3C80"/>
+</g>
+<path id="ELEVATORS__F3__H3.2_04" d="M723 2802H749V2828H723V2802Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H3.2_03" d="M1630 2802H1656V2828H1630V2802Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H3.2_02" d="M1452 4002H1478V3976H1452V4002Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H3.2_01" d="M1630 4002H1656V3976H1630V4002Z" fill="#0E3C80"/>
+</g>
+<g id="WALLS__F3__H3.2">
+<path id="WALLS__F3__H7.2_32_5" d="M541 2844H659" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_31_5" d="M875.5 2772H811V2785.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_30_5" d="M1775.5 2772H1711V2785.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_29_5" d="M2265.5 2772H2201M2265.5 2772V2785.5M2265.5 2772H2383.5L2452.5 2844.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_28_5" d="M1350 2772H1414.5V2785.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_27_5" d="M811 2814.75V2844H917.5M917.5 2844H1023L1023 2772H917M917.5 2844L917 2772M896.25 2772H917" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_26_5" d="M1711 2814.75V2844H1817.5M1817.5 2844H1923L1923 2772H1817M1817.5 2844L1817 2772M1796.25 2772H1817" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_25_5" d="M2266 2814.75V2844H2175.58M2175.58 2844H2086L2086 2772H2176M2175.58 2844L2176 2772M2193.62 2772H2176" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_24_5" d="M1415 2814.75V2844H1297.45M1297.45 2844H1181L1181 2772H1298M1297.45 2844L1298 2772M1320.9 2772H1298" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_23_5" d="M1439 2844H1560" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_22_5" d="M2306.5 2844H2452L2540 2932V3016" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_21_5" d="M2621.5 3016H2635.5L2817 3197.5V3383.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_20_5" d="M2981.5 3384H2996.5V3905.5H2988" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_19_5" d="M1185 3928.5V3906L1264 3906L1293 3906M1382 3951.5L1382 3906H1312.5L1312.5 3951.5M1185 3928.5L1185 4007L1264 4007L1264 3951.5L1312.5 3951.5L1382 3951.5M1382 3951.5L1382 4007M1185 3928.5L1264 3928.5M1293 3928.5L1264 3928.5M1264 3928.5L1264 3906M1293 4007L1360 4007" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_18_5" d="M2166 3906L2214.5 3906L2284 3906L2284 3951.5M2214.5 3906L2214.5 3951.5M2087 3928.5V4007L2166 4007L2166 3951.5L2214.5 3951.5L2284 3951.5M2284 3951.5L2284 4007M2087 3928.5L2087 3906L2166 3906M2087 3928.5L2166 3928.5M2195 3928.5L2166 3928.5M2166 3928.5L2166 3906M2195 4007L2262 4007" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_17_5" d="M913 3906L948 3906M849 4008H824V3945M879 4008H913M894 3945V3906L824 3906V3945M894 3945H948V4008H1022V3930M894 3945H824M1022 3930V3906L948 3906M1022 3930H948M913 3930H948M948 3930V3906" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_16_5" d="M1815 3906L1850 3906M1751 4008H1726V3945M1781 4008H1815M1796 3945V3906L1726 3906V3945M1796 3945H1850V4008H1924V3930M1796 3945H1726M1924 3930V3906L1850 3906M1924 3930H1850M1815 3930H1850M1850 3930V3906" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_15_5" d="M754 3906L550 3906M550 3970.27C550 3982.52 550 4007 550 4007L754 4007L754 3970.27L550 3970.27Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_14_5" d="M1656 3906L1452 3906M1452 3970.27L1656 3970.27M1452 4007L1656 4007" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_13_5" d="M2558 3906L2354 3906M2354 3970.27C2354 3982.52 2354 4007 2354 4007L2558 4007L2558 3970.27L2354 3970.27Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_12_5" d="M480 3906L437 3906M365 3956.5V4007H331L331 3906L365 3906L426 3906M365 3906V3956.5M365 3956.5L479 3956.5V3906M395.5 4007H479V3980" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_11_5" d="M2746 3906L2711.95 3906M2654.93 3956.5V4007H2628V3906L2654.93 3906L2703.23 3906M2654.93 3906V3956.5M2654.93 3956.5L2745.21 3956.5V3906M2679.08 4007H2745.21V3980M2781.5 3906H2822V4007H2781.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_10_5" d="M300.5 3729V3905.97L230 3905.97V3937.5L300.5 4008" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_09_5" d="M300 3491L300 3655L262 3655" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_08_5" d="M300 3478.93L300 3465L230 3465L230 3560M230 3655L230 3560M230 3560L300 3560" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_07_5" d="M300 3381L300 3370" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_06_5" d="M300 3284L300 3270" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_05_5" d="M300 3258L300 3094L262.5 3094" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_04_5" d="M372.75 2844L300 2844L300 3021L230 3021L230 2772L372.75 2772L515.5 2772M372.75 2772L372.75 2844M372.75 2844L515.5 2844L515.5 2807" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_03_5" d="M300 3282L230 3282L230 3198L230 3093.5M230 3198L300 3198" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_02_5" d="M676 2844H706M706 2844H765M706 2844V2818.75M706 2818.75V2793.5H765V2772H667M706 2818.75H676M541 2772H583.159M583.159 2772V2844M583.159 2772H667M667 2772V2802" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_01_5" d="M1578 2844H1608M1608 2844H1667M1608 2844V2818.75M1608 2818.75V2793.5H1667V2772H1569M1608 2818.75H1578M1443 2772H1485.16M1485.16 2772V2844M1485.16 2772H1569M1569 2772V2802" stroke="black" stroke-width="4"/>
+</g>
+
+</g></g></svg>

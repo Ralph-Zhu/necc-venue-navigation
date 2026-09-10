@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5249 2713 2833 1322" width="2833" height="1322"><style>path[id^="FLOOR"]{fill:#f8fafb}path[id^="WALL"],g[id^="WALL"] path{fill:none;stroke:#697c88;stroke-width:2.6}line[id*="DOOR"]{stroke:#139d91}</style><g transform="matrix(1 0 0 1 0 0)"><g xmlns="http://www.w3.org/2000/svg" id="8.1">
+<path id="FLOOR__F3__H7.2_3" d="M5279 3902.5L7976 3902.9L7976 2841L5825 2841L5736.5 2929.5L5736.5 3013.5L5640.5 3013.5L5459 3195L5459 3381L5279 3381L5279 3902.5Z" fill="#CA0808" fill-opacity="0.2"/>
+<g id="DOOR__F3__H7.2_3">
+<line id=" DOORS__F3__H7.2__01å·å‡ºå…¥å£_4" y1="-2.5" x2="166" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5453 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__02å·å‡ºå…¥å£_4" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5718 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__03å·å‡ºå…¥å£_4" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5992 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__04å·å‡ºå…¥å£_4" y1="-2.5" x2="163" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6352 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__05å·å‡ºå…¥å£_4" y1="-2.5" x2="73" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6623 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__06å·å‡ºå…¥å£_4" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6894 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__07å·å‡ºå…¥å£_4" y1="-2.5" x2="163" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7254 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__08å·å‡ºå…¥å£_4" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7522 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__09å·å‡ºå…¥å£_4" y1="-2.5" x2="70" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7796 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__10å·å‡ºå…¥å£_4" y1="-2.5" x2="31" y2="-2.5" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7976 3906)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__11å·å‡ºå…¥å£_4" y1="-2.5" x2="74" y2="-2.5" transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 7973 3726)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__12å·å‡ºå…¥å£_4" y1="-2.5" x2="83" y2="-2.5" transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 7973 3461)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__13å·å‡ºå…¥å£_4" y1="-2.5" x2="86" y2="-2.5" transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 7973 3367)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__14å·å‡ºå…¥å£_4" y1="-2.5" x2="72" y2="-2.5" transform="matrix(-1.31134e-07 -1 -1 1.31134e-07 7973 3090)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__15å·å‡ºå…¥å£_4" y1="-2.5" x2="26" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 7735 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__16å·å‡ºå…¥å£_4" y1="-2.5" x2="46" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 7465 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__17å·å‡ºå…¥å£_4" y1="-2.5" x2="158" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 7095 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__18å·å‡ºå…¥å£_4" y1="-2.5" x2="28" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 6833 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__19å·å‡ºå…¥å£_4" y1="-2.5" x2="44" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 6565 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__20å·å‡ºå…¥å£_4" y1="-2.5" x2="163" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 6190 2838)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__21å·å‡ºå…¥å£_4" y1="-2.5" x2="82" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 5654 3010)" stroke="#00D0EB" stroke-width="5"/>
+<line id=" DOORS__F3__H7.2__22å·å‡ºå…¥å£_4" y1="-2.5" x2="165" y2="-2.5" transform="matrix(1 -8.74228e-08 -8.74228e-08 -1 5294 3377)" stroke="#00D0EB" stroke-width="5"/>
+</g>
+<g id="STAIRS__F3__H7.2_3">
+<rect id="STAIRS__F3__H7.2_13_4" width="142" height="72" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7903 2769)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_12_4" width="71" height="103" transform="matrix(-1 8.74228e-08 8.74228e-08 1 8047 3091)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_11_4" width="71" height="95" transform="matrix(-1 8.74228e-08 8.74228e-08 1 8047 3557)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_10_4" width="115" height="50" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7911 3954)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_09_4" width="124" height="62" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7452 3942)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_08_4" width="117" height="55" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7011 3949)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_07_4" width="124" height="61" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6550 3943)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_06_4" width="117" height="55" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6109 3949)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_05_4" width="106" height="72" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7465 2769)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_04_4" width="117" height="72" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6978 2769)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_03_4" width="105" height="72" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6565 2769)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_02_4" width="89" height="72" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6100 2769)" fill="#722B2B"/>
+<rect id="STAIRS__F3__H7.2_01_4" width="89" height="50" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5620 3954)" fill="#722B2B"/>
+</g>
+<g id="WC_FEMALE__F3__H7.2_3">
+<rect id="WC_FEMALE__F3__H7.2_06_4" width="83" height="71" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6790 2770)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H7.2_05_4" width="83" height="71" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7692 2770)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H7.2_04_4" width="70" height="95" transform="matrix(-1 8.74228e-08 8.74228e-08 1 8046 3462)" fill="#DC64CE"/>
+<rect id="WC_FEMALE__F3__H7.2_03_4" width="115" height="50" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7911 3903)" fill="#DC64CE"/>
+<path id="WC_FEMALE__F3__H7.2_02_4" d="M6964 3947.95L6964 3903L6984.26 3903L6984.26 3926.23L7090 3926.23L7090 4004L7012.42 4004L7012.42 3947.95L6964 3947.95Z" fill="#DC64CE"/>
+<path id="WC_FEMALE__F3__H7.2_01_4" d="M6063 3947.95L6063 3903L6083.26 3903L6083.26 3926.23L6189 3926.23L6189 4004L6111.42 4004L6111.42 3947.95L6063 3947.95Z" fill="#DC64CE"/>
+</g>
+<g id="WC_MALE__F3__H07.2_3">
+<path id="WC_MALE__F3__H7.2_06_4" d="M6707 2769.5L6707 2841L6697.5 2841L6697.5 2815.5L6668 2815.5L6668 2790L6609 2790L6609 2769.5L6707 2769.5Z" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H7.2_05_4" d="M7609 2769.5L7609 2841L7599.5 2841L7599.5 2815.5L7570 2815.5L7570 2790L7511 2790L7511 2769.5L7609 2769.5Z" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H7.2_04_4" width="71" height="84" transform="matrix(-1 8.74228e-08 8.74228e-08 1 8047 3195)" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H7.2_03_4" d="M7382 3941.5C7381.83 3928.83 7381.6 3903.4 7382 3903L7362.5 3903L7362.5 3927L7254 3927L7254 4004L7327.5 4004L7327.5 3941.5L7382 3941.5Z" fill="#79A2F4"/>
+<path id="WC_MALE__F3__H7.2_02_4" d="M6480 3941.5C6479.83 3928.83 6479.6 3903.4 6480 3903L6460.5 3903L6460.5 3927L6352 3927L6352 4004L6425.5 4004L6425.5 3941.5L6480 3941.5Z" fill="#79A2F4"/>
+<rect id="WC_MALE__F3__H7.2_01_4" width="89" height="51" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5620 3903)" fill="#79A2F4"/>
+</g>
+<g id="WC_ACCESSIBLE__F3__H7.2_3">
+<rect id="WC_ACCESSIBLE__F3__H7.2_06_4" width="26" height="22" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6109 3903)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H7.2_05_4" width="35" height="23" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6461 3903)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H7.2_04_4" width="28" height="23" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7012 3903)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H7.2_03_4" width="35" height="23" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7363 3903)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H7.2_02_4" width="30" height="24" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7600 2816)" fill="#6FA24E"/>
+<rect id="WC_ACCESSIBLE__F3__H7.2_01_4" width="30" height="24" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6698 2816)" fill="#6FA24E"/>
+</g>
+<g id="ESCALATORS__F3__H7.2_3">
+<rect id="ESCALATORS__F3__H7.2_04_4" width="156" height="32" transform="matrix(-1 8.74228e-08 8.74228e-08 1 5900 3933)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H7.2_03_4" width="156" height="32" transform="matrix(-1 8.74228e-08 8.74228e-08 1 6800 3933)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H7.2_02_4" width="156" height="32" transform="matrix(-1 8.74228e-08 8.74228e-08 1 7702 3933)" fill="#DFB568"/>
+<rect id="ESCALATORS__F3__H7.2_01_4" width="193" height="32" transform="matrix(-0.707107 0.707107 0.707107 0.707107 5636.37 3046)" fill="#DFB568"/>
+</g>
+<g id="ELEVATORS__F3__H7.2_3">
+<g id="ELEVATORS__F3__H7.2_06_4">
+<path d="M5488 3934L5462 3934L5462 3960L5488 3960L5488 3934Z" fill="#0E3C80"/>
+<path d="M5488 3963L5462 3963L5462 3989L5488 3989L5488 3963Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H7.2_05_4">
+<path d="M8002 3914L7976 3914L7976 3940L8002 3940L8002 3914Z" fill="#0E3C80"/>
+<path d="M8002 3943L7976 3943L7976 3969L8002 3969L8002 3943Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H7.2_04_4">
+<path d="M7729 2778L7703 2778L7703 2804L7729 2804L7729 2778Z" fill="#0E3C80"/>
+<path d="M7729 2807L7703 2807L7703 2833L7729 2833L7729 2807Z" fill="#0E3C80"/>
+</g>
+<g id="ELEVATORS__F3__H7.2_03_4">
+<path d="M6822 2778L6796 2778L6796 2804L6822 2804L6822 2778Z" fill="#0E3C80"/>
+<path d="M6822 2807L6796 2807L6796 2833L6822 2833L6822 2807Z" fill="#0E3C80"/>
+</g>
+<path id="ELEVATORS__F3__H7.2_02_8" d="M7553 2799L7527 2799L7527 2825L7553 2825L7553 2799Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H7.2_01_6" d="M6646 2799L6620 2799L6620 2825L6646 2825L6646 2799Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H7.2_01_7" d="M6824 3973L6798 3973L6798 3999L6824 3999L6824 3973Z" fill="#0E3C80"/>
+<path id="ELEVATORS__F3__H7.2_01_8" d="M6646 3973L6620 3973L6620 3999L6646 3999L6646 3973Z" fill="#0E3C80"/>
+</g>
+<g id="WALLS__F3__H7.2_3">
+<path id="WALLS__F3__H7.2_32_5" d="M7735 2841L7617 2841" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_31_5" d="M7400.5 2769L7465 2769L7465 2782.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_30_5" d="M6500.5 2769L6565 2769L6565 2782.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_29_5" d="M6010.5 2769L6075 2769M6010.5 2769L6010.5 2782.5M6010.5 2769L5892.5 2769L5823.5 2841.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_28_5" d="M6926 2769L6861.5 2769L6861.5 2782.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_27_5" d="M7465 2811.75L7465 2841L7358.5 2841M7358.5 2841L7253 2841L7253 2769L7359 2769M7358.5 2841L7359 2769M7379.75 2769L7359 2769" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_26_5" d="M6565 2811.75L6565 2841L6458.5 2841M6458.5 2841L6353 2841L6353 2769L6459 2769M6458.5 2841L6459 2769M6479.75 2769L6459 2769" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_25_5" d="M6010 2811.75L6010 2841L6100.42 2841M6100.42 2841L6190 2841L6190 2769L6100 2769M6100.42 2841L6100 2769M6082.38 2769L6100 2769" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_24_5" d="M6861 2811.75L6861 2841L6978.55 2841M6978.55 2841L7095 2841L7095 2769L6978 2769M6978.55 2841L6978 2769M6955.1 2769L6978 2769" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_23_5" d="M6837 2841L6716 2841" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_22_5" d="M5969.5 2841L5824 2841L5736 2929L5736 3013" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_21_5" d="M5654.5 3013L5640.5 3013L5459 3194.5L5459 3380.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_20_5" d="M5294.5 3381L5279.5 3381L5279.5 3902.5L5288 3902.5" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_19_5" d="M7091 3925.5L7091 3903L7012 3903L6983 3903M6894 3948.5L6894 3903L6963.5 3903L6963.5 3948.5M7091 3925.5L7091 4004L7012 4004L7012 3948.5L6963.5 3948.5L6894 3948.5M6894 3948.5L6894 4004M7091 3925.5L7012 3925.5M6983 3925.5L7012 3925.5M7012 3925.5L7012 3903M6983 4004L6916 4004" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_18_5" d="M6189 3925.5L6189 3903L6110 3903L6081 3903M5992 3948.5L5992 3903L6061.5 3903L6061.5 3948.5M6189 3925.5L6189 4004L6110 4004L6110 3948.5L6061.5 3948.5L5992 3948.5M5992 3948.5L5992 4004M6189 3925.5L6110 3925.5M6081 3925.5L6110 3925.5M6110 3925.5L6110 3903M6081 4004L6014 4004" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_17_5" d="M7363 3903L7328 3903M7427 4005L7452 4005L7452 3942M7397 4005L7363 4005M7382 3942L7382 3903L7452 3903L7452 3942M7382 3942L7328 3942L7328 4005L7254 4005L7254 3927M7382 3942L7452 3942M7254 3927L7254 3903L7328 3903M7254 3927L7328 3927M7363 3927L7328 3927M7328 3927L7328 3903" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_16_5" d="M6461 3903L6426 3903M6525 4005L6550 4005L6550 3942M6495 4005L6461 4005M6480 3942L6480 3903L6550 3903L6550 3942M6480 3942L6426 3942L6426 4005L6352 4005L6352 3927M6480 3942L6550 3942M6352 3927L6352 3903L6426 3903M6352 3927L6426 3927M6461 3927L6426 3927M6426 3927L6426 3903" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_15_5" d="M7522 3903L7726 3903M7726 3967.27C7726 3979.52 7726 4004 7726 4004L7522 4004L7522 3967.27L7726 3967.27Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_14_5" d="M6620 3903L6824 3903M6824 3967.27L6620 3967.27M6824 4004L6620 4004" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_13_5" d="M5718 3903L5922 3903M5922 3967.27C5922 3979.52 5922 4004 5922 4004L5718 4004L5718 3967.27L5922 3967.27Z" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_12_5" d="M7796 3903L7839 3903M7911 3953.5L7911 4004L7945 4004L7945 3903L7911 3903L7850 3903M7911 3903L7911 3953.5M7911 3953.5L7797 3953.5L7797 3903M7880.5 4004L7797 4004L7797 3977" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_11_5" d="M5530 3903L5564.05 3903M5621.07 3953.5L5621.07 4004L5648 4004L5648 3903L5621.07 3903L5572.77 3903M5621.07 3903L5621.07 3953.5M5621.07 3953.5L5530.79 3953.5L5530.79 3903M5596.92 4004L5530.79 4004L5530.79 3977M5494.5 3903L5454 3903L5454 4004L5494.5 4004" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_10_5" d="M7975.5 3726L7975.5 3902.97L8046 3902.97L8046 3934.5L7975.5 4005" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_09_5" d="M7976 3488L7976 3652L8014 3652" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_08_5" d="M7976 3475.93L7976 3462L8046 3462L8046 3557M8046 3652L8046 3557M8046 3557L7976 3557" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_07_5" d="M7976 3378L7976 3367" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_06_5" d="M7976 3281L7976 3267" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_05_5" d="M7976 3255L7976 3091L8013.5 3091" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_04_5" d="M7903.25 2841L7976 2841L7976 3018L8046 3018L8046 2769L7903.25 2769L7760.5 2769M7903.25 2769L7903.25 2841M7903.25 2841L7760.5 2841L7760.5 2804" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_03_5" d="M7976 3279L8046 3279L8046 3195L8046 3090.5M8046 3195L7976 3195" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_02_5" d="M7600 2841L7570 2841M7570 2841L7511 2841M7570 2841L7570 2815.75M7570 2815.75L7570 2790.5L7511 2790.5L7511 2769L7609 2769M7570 2815.75L7600 2815.75M7735 2769L7692.84 2769M7692.84 2769L7692.84 2841M7692.84 2769L7609 2769M7609 2769L7609 2799" stroke="black" stroke-width="4"/>
+<path id="WALLS__F3__H7.2_01_5" d="M6698 2841L6668 2841M6668 2841L6609 2841M6668 2841L6668 2815.75M6668 2815.75L6668 2790.5L6609 2790.5L6609 2769L6707 2769M6668 2815.75L6698 2815.75M6833 2769L6790.84 2769M6790.84 2769L6790.84 2841M6790.84 2769L6707 2769M6707 2769L6707 2799" stroke="black" stroke-width="4"/>
+</g>
+
+</g></g></svg>

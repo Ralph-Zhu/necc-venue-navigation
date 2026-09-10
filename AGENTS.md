@@ -10,6 +10,8 @@ Read `MODEL_GENERATION_STANDARD_V2_DRAFT.md` before modifying any geometry, came
 
 Read `MODEL_UPDATE_20260907.md` as the latest user-authorized override for SVG sources, exact facility footprints, automatic all-hall LOD, icon density and exploded display spacing.
 
+Read `NAVIGATION_RULES_20260907.md` before routing changes. Current routing uses `navigation-engine.js` in `navigation-worker.js`: hall → public road → hall only; no third-hall or Mid shortcuts, including cross-floor legs. Keep final geometry audit and cancellation safeguards.
+
 Key invariants:
 
 - SVG scale is `10 px = 1 m`; do not add responsive model scaling.
@@ -20,7 +22,7 @@ Key invariants:
 - F3 retains its central circular hole and surrounding Mid business area.
 - Stairs, escalators, and elevators use fixed configured heights and bounded footprints.
 - Same-floor navigation uses the single-floor view; cross-floor navigation switches to the combined view.
-- Preserve left-drag pan/right-drag rotate on desktop and one-finger rotate/two-finger pan on touch.
+- Preserve left-drag pan/right-drag rotate on desktop. Touch: one-finger pan, two-finger pinch zoom and twist rotate (20260907-4 override).
 
 ## Main pages
 

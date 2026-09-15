@@ -11,6 +11,7 @@ node_modules/
 dist/
 coverage/
 .cache/
+outputs/
 *.log
 
 # Local secrets
@@ -22,4 +23,3 @@ coverage/
 *.zip
 *.tar
 *.tar.gz
-

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./campus-3f.css" />
   <link rel="stylesheet" href="./campus-all.css?v=20260907-3" />
   <link rel="stylesheet" href="./campus-booths.css?v=1" />
+  <link rel="stylesheet" href="./campus-ai.css?v=20260914-1" />
 </head>
 <body>
   <main class="map-shell">
@@ -68,6 +69,42 @@
         </div>
       </aside>
 
+      <button type="button" class="ai-assistant-launcher" id="aiAssistantLauncher" aria-expanded="false" aria-controls="aiAssistantPanel">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3Z"/><path d="m18.5 13 .7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7.7-2.3Z"/><path d="M5.5 13.5 6.4 16l2.6.9-2.6.9-.9 2.7-.9-2.7-2.6-.9 2.6-.9.9-2.5Z"/></svg>
+        <span>AI观展助手</span>
+      </button>
+
+      <aside class="ai-panel" id="aiAssistantPanel" aria-label="AI观展助手" hidden>
+        <div class="ai-panel-header">
+          <span class="ai-panel-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3Z"/><path d="M5 14.5 6 17l2.5 1L6 19l-1 2.5L4 19l-2.5-1L4 17l1-2.5Z"/></svg></span>
+          <div class="ai-panel-title"><strong>AI观展助手</strong><small>描述想看的行业、产品或技术</small></div>
+          <span class="ai-connection" id="aiAssistantConnection">检测中</span>
+          <button type="button" class="ai-close" id="aiAssistantClose" aria-label="关闭AI观展助手">×</button>
+        </div>
+        <div class="ai-scroll">
+          <p class="ai-intro">可以查找本届展商，也可以直接说“最近的卫生间、电梯或出入口”，结果可一键导航。</p>
+          <div class="ai-quick-list" aria-label="快捷需求">
+            <button type="button" class="ai-quick" data-ai-query="新能源汽车">新能源汽车</button>
+            <button type="button" class="ai-quick" data-ai-query="智能制造和工业自动化">智能制造</button>
+            <button type="button" class="ai-quick" data-ai-query="新材料和复合材料">新材料</button>
+            <button type="button" class="ai-quick" data-ai-query="医疗科技和医疗器械">医疗科技</button>
+            <button type="button" class="ai-quick" data-ai-query="离我最近的卫生间">最近卫生间</button>
+            <button type="button" class="ai-quick" data-ai-query="离我最近的电梯">最近电梯</button>
+            <button type="button" class="ai-quick" data-ai-query="离我最近的出入口">最近出入口</button>
+          </div>
+          <div class="ai-answer" id="aiAssistantAnswer" aria-live="polite" hidden></div>
+          <div class="ai-results" id="aiAssistantResults"></div>
+        </div>
+        <form class="ai-form" id="aiAssistantForm">
+          <label for="aiAssistantInput">参观需求</label>
+          <div class="ai-input-row">
+            <textarea id="aiAssistantInput" rows="1" maxlength="200" placeholder="例如：最近的卫生间，或新能源汽车"></textarea>
+            <button type="submit" class="ai-send" id="aiAssistantSend" aria-label="发送参观需求"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 8-16 8 3-8-3-8Z"/><path d="M7 12h13"/></svg></button>
+          </div>
+          <div class="ai-form-status" id="aiAssistantStatus" aria-live="polite">已接入展商推荐与地图设施导航</div>
+        </form>
+      </aside>
+
       <div class="legend-card">
         <span><i class="floor-dot f3"></i>F3 展馆层</span>
         <span><i class="floor-dot f1"></i>F1 展馆层</span>
@@ -80,6 +117,7 @@
   <div id="svgSourceF1" class="svg-source" aria-hidden="true"></div>
   <div id="svgSourceF3" class="svg-source" aria-hidden="true"></div>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="./campus-all.js?v=20260910-1"></script>
+  <script src="./campus-all.js?v=20260914-2"></script>
+  <script src="./campus-ai.js?v=20260914-2"></script>
 </body>
 </html>

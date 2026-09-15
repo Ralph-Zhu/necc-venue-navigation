@@ -13,8 +13,8 @@
     explodedFloorGap:700
   };
   const FLOOR_DEFS=[
-    {id:"F1",source:"./assets/figma-f1-20260910.svg",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1","NH"],color:0x4e9f92},
-    {id:"F3",source:"./assets/figma-f3-20260907.svg",root:"F3",physicalElevation:null,overviewOffset:MODEL_STANDARD.explodedFloorGap,halls:["1.2","2.2","3.2","4.2","5.2","6.2","7.2","8.2"],color:0x4d91aa}
+    {id:"F1",source:"./assets/source-20260911/floors/F1.svg",root:"F1",physicalElevation:0,overviewOffset:0,halls:["1.1","2.1","3.1","4.1","5.1","6.1","7.1","8.1","NH"],color:0x4e9f92},
+    {id:"F3",source:"./assets/source-20260911/floors/F3.svg",root:"F3",physicalElevation:null,overviewOffset:MODEL_STANDARD.explodedFloorGap,halls:["1.2","2.2","3.2","4.2","5.2","6.2","7.2","8.2"],color:0x4d91aa}
   ];
   const viewParams=new URLSearchParams(location.search),requestedView=(viewParams.get("view")||viewParams.get("floor")||"ALL").toUpperCase();
   let viewMode=["ALL","F1","F3"].includes(requestedView)?requestedView:"ALL";
@@ -206,7 +206,7 @@
     const sun=new THREE.DirectionalLight(0xfff5df,2.7);sun.position.set(-380,620,260);scene.add(sun);
     const rim=new THREE.DirectionalLight(0x57d9cc,1.15);rim.position.set(480,180,-360);scene.add(rim);
     const grid=new THREE.GridHelper(1120,28,0x28515e,0x132b35);grid.position.y=-2;grid.visible=false;scene.add(grid);
-    const halls=[],endpoints=[],graph=new Map(),routeGroup=new THREE.Group(),floorModels=[],floorGroups=new Map(),wallObstacles=new Map(),walkableByFloor=new Map(),connectorPairs=[];scene.add(routeGroup);
+    const halls=[],endpoints=[],graph=new Map(),routeGroup=new THREE.Group(),floorModels=[],floorGroups=new Map(),wallObstacles=new Map(),walkableByFloor=new Map(),connectorPairs=[],shopRegions=[];scene.add(routeGroup);
     const floorDisplayOffset=floor=>viewMode==="ALL"?(FLOOR_DEFS.find(def=>def.id===floor)?.overviewOffset||0):0;
     const displayedPosition=(position,floor)=>position.clone().setY(position.y+floorDisplayOffset(floor));
     const ensureNode=node=>{if(!graph.has(node.id))graph.set(node.id,{node,edges:[]})};
@@ -287,7 +287,7 @@
           endpoints.push(endpoint);hall.endpoints.push(endpoint);ensureNode(endpoint);edge(endpoint,centerNodeGraph,distance2d(position,center)+3);addMarker(endpoint);
         });
         TYPES.forEach(type=>{
-          const counts={};semanticGeometry(node,type.pattern).forEach(facility=>{
+          const counts={};semanticGeometry(node,type.pattern).filter(facility=>!facility.closest('g[id^="SHOP"]')).forEach(facility=>{
             const frame=footprintFrame(svg,facility);if(!frame)return;counts[type.key]=(counts[type.key]||0)+1;
             const object=facilityObject(frame,type);if(object)detailGroup.add(object);
             const position=frame.position.clone();position.y=.2;
@@ -297,6 +297,32 @@
           });
         });
       });
+      // Public Shop annexes belong to navigation, never to the exhibition FLOOR.
+      for(const hall of halls.filter(h=>h.floor===floorDef.id&&h.node)){
+        for(const shop of hall.node.querySelectorAll('g[id^="SHOP"]')){
+          const floorNode=shop.querySelector('path[id^="FLOOR_SHOP"]');if(!floorNode)continue;
+          const polygon=transformedSubpaths(svg,floorNode,3)[0];if(!polygon?.length)continue;
+          const region={id:`${floorDef.id}:shop:${hall.id}`,floor:floorDef.id,hall:'road',displayHall:hall.id,poly:polygon.map(world)};shopRegions.push(region);
+          const ground=shapeMesh(polygon,MODEL_STANDARD.floorThickness,new THREE.MeshStandardMaterial({color:0xb5a080,roughness:.82}));if(ground){ground.userData.shop=region.id;hall.group.add(ground)}
+          const segments=[...shop.querySelectorAll('path[id^="WALL_SHOP"]')].flatMap(n=>transformedSegments(svg,n,6));wallObstacles.get(floorDef.id).push(...segments.map(pair=>pair.map(world)));
+          const walls=segmentBatch(segments,MODEL_STANDARD.wallHeight,.26,new THREE.MeshStandardMaterial({color:0xe2edf0,roughness:.68}));if(walls)hall.detailGroup.add(walls);
+          semanticGeometry(shop,/^ELEVATORS?_/i).forEach((facility,i)=>{
+            const type=TYPES.find(t=>t.key==='elevator'),frame=footprintFrame(svg,facility);if(!frame)return;
+            const object=facilityObject(frame,type);if(object)hall.detailGroup.add(object);
+            const position=frame.position.clone().setY(.2),endpoint={id:`${region.id}:elevator:${i+1}`,kind:'endpoint',type:'elevator',floor:floorDef.id,hall:'road',displayHall:hall.id,connectorKey:`shop:${hall.id.split('.')[0]}:elevator:${i+1}`,position,label:`${floorDef.id} · ${hall.id}馆 Shop · 电梯${i+1}号`,css:type.css};
+            endpoints.push(endpoint);hall.endpoints.push(endpoint);ensureNode(endpoint);addMarker(endpoint);
+          });
+        }
+      }
+      const publicDetail=new THREE.Group();floorGroup.add(publicDetail);floorGroup.userData.publicDetail=publicDetail;
+      const publicEscalators=[...root.children].filter(n=>n.id===`ESCALATORS__${floorDef.id}`);
+      for(const container of publicEscalators)for(const facility of [...container.children].filter(n=>n.matches('path,rect,polygon')&&/^ESCALATORS?__F[13]_\d+/.test(n.id))){
+        const type=TYPES.find(t=>t.key==='escalator'),frame=footprintFrame(svg,facility);if(!frame)continue;
+        const number=facility.id.match(/_(\d+)$/)?.[1],object=facilityObject(frame,type);if(object)publicDetail.add(object);
+        const endpoint={id:`${floorDef.id}:road:escalator:${number}`,kind:'endpoint',type:'escalator',floor:floorDef.id,hall:'road',connectorKey:`public:escalator:${number}`,position:frame.position.clone().setY(.2),label:`${floorDef.id} · 公共道路 · 扶梯${Number(number)}号`,css:type.css};
+        endpoints.push(endpoint);ensureNode(endpoint);addMarker(endpoint);
+      }
+      batchFacilities(publicDetail);
       const badge=document.createElement("span");badge.className=`floor-badge ${floorDef.id.toLowerCase()}`;badge.textContent=floorDef.id;labels.appendChild(badge);floorGroup.userData.badge=badge;floorGroup.userData.badgePosition=new THREE.Vector3(-430,8,-360);
     });
 
@@ -329,8 +355,9 @@
     connectorTypes.forEach(type=>{
       const lower=endpoints.filter(node=>node.floor==="F1"&&node.type===type),upper=endpoints.filter(node=>node.floor==="F3"&&node.type===type);
       lower.forEach(from=>{
-        const sameWing=upper.filter(to=>to.hall.split(".")[0]===from.hall.split(".")[0]);
-        const candidates=sameWing.length?sameWing:upper;if(!candidates.length)return;
+        const eligible=upper.filter(to=>from.connectorKey?to.connectorKey===from.connectorKey:!to.connectorKey);
+        const sameWing=eligible.filter(to=>to.hall.split(".")[0]===from.hall.split(".")[0]);
+        const candidates=sameWing.length?sameWing:eligible;if(!candidates.length)return;
         const to=candidates.reduce((best,item)=>!best||distance2d(from.position,item.position)<distance2d(from.position,best.position)?item:best,null);
         edge(from,to,24,type);connectorPairs.push({type,lower:from,upper:to});
       });
@@ -392,6 +419,7 @@
       if(start)startSelect.value=start.id;clearRouteButton.disabled=true;
     }
     function updateHallRendering(){
+      floorModels.forEach(group=>{const item=group.userData;item.publicDetailed=distance<size*(item.publicDetailed?.92:.80);if(item.publicDetail)item.publicDetail.visible=item.publicDetailed});
       halls.forEach(item=>{
         const detailed=distance<size*(item.detailed?.92:.80);item.detailed=detailed;
         if(item.coverMesh)item.coverMesh.visible=!detailed;if(item.detailGroup)item.detailGroup.visible=detailed;
@@ -408,6 +436,37 @@
       clearRouteButton.disabled=!selectedDestination&&!activeRoute.length;
       if(selectedDestination){const hall=halls.find(item=>item.floor===selectedDestination.floor&&item.id===selectedDestination.hall);if(hall)focusHall(hall,false)}requestRender();
     }
+    const facilityTypeLabel=type=>type==="door"?"出入口":TYPES.find(item=>item.key===type)?.label||"地图设施";
+    function facilityArea(node){
+      if(node.hall==="mid")return "中央商务区";
+      if(node.hall==="road")return node.displayHall?`${node.displayHall}馆 Shop`:`公共道路`;
+      return `${node.hall}馆`;
+    }
+    function findFacilities(request={}){
+      const types=new Set(Array.isArray(request.types)?request.types:[]),start=endpoints.find(node=>node.id===startSelect.value);
+      const requestedFloor=String(request.floor||""),requestedHall=String(request.hall||""),limit=Math.max(1,Math.min(8,Number(request.limit)||5));
+      return endpoints.filter(node=>node.type!=="booth"&&(!types.size||types.has(node.type))&&node.id!==start?.id)
+        .filter(node=>!requestedFloor||node.floor===requestedFloor)
+        .filter(node=>!requestedHall||node.hall===requestedHall||node.displayHall===requestedHall)
+        .map(node=>{
+          const straightDistance=start?distance2d(start.position,node.position):0;
+          const score=straightDistance+(start&&start.floor!==node.floor?600:0)+(start&&start.hall===node.hall?-24:0);
+          return{endpointId:node.id,type:node.type,typeLabel:facilityTypeLabel(node.type),name:node.label.split(" · ").at(-1),floor:node.floor,hall:node.displayHall||node.hall,area:facilityArea(node),label:node.label,distanceMeters:Math.round(straightDistance),sameFloor:!start||start.floor===node.floor,score};
+        })
+        .sort((a,b)=>a.score-b.score||a.label.localeCompare(b.label,"zh-CN"))
+        .slice(0,limit)
+        .map(({score,...item})=>item);
+    }
+    function showEndpoint(id){
+      const endpoint=endpoints.find(node=>node.id===id);if(!endpoint)return false;
+      if(endpoint.type==="booth"){setViewMode(endpoint.floor);focusHall(boothHall);openBooth(endpoint);return true}
+      if(viewMode!==endpoint.floor)setViewMode(endpoint.floor);
+      closeBooth();setDestination(endpoint.id);
+      const hall=halls.find(item=>item.floor===endpoint.floor&&item.id===(endpoint.displayHall||endpoint.hall));
+      if(hall)focusHall(hall);else{desiredTarget.copy(displayedPosition(endpoint.position,endpoint.floor));desiredDistance=Math.max(minDistance*2,55);requestRender()}
+      return true;
+    }
+    function navigateEndpoint(id){const endpoint=endpoints.find(node=>node.id===id);if(!endpoint)return false;destinationSelect.value=endpoint.id;planRoute();return true}
     function pointInPolygon(point,polygon){
       let inside=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const a=polygon[i],b=polygon[j],cross=(a.z>point.z)!==(b.z>point.z)&&point.x<(b.x-a.x)*(point.z-a.z)/(b.z-a.z||1e-9)+a.x;if(cross)inside=!inside}return inside;
     }
@@ -430,7 +489,7 @@
     }
     const plainPoint=p=>({x:p.x,z:p.z});
     const plainEndpoint=n=>({id:n.id,floor:n.floor,hall:n.hall,type:n.type,position:plainPoint(n.position),arrivalCandidates:n.arrivalCandidates?.map(plainPoint)});
-    function navigationData(){return{floors:FLOOR_DEFS.map(def=>({id:def.id,rooms:endpoints.filter(n=>n.floor===def.id&&n.navigationPolygon).map(n=>({id:n.id,hall:n.hall,poly:n.navigationPolygon.map(plainPoint)})),ground:walkableByFloor.get(def.id).ground.map(poly=>poly.map(plainPoint)),blocked:walkableByFloor.get(def.id).blocked.map(poly=>poly.map(plainPoint)),mid:halls.find(h=>h.floor===def.id&&h.id==='mid')?.navPolygons.map(poly=>poly.map(plainPoint))||[],halls:halls.filter(h=>h.floor===def.id&&h.id!=='mid').map(h=>({id:h.id,polygon:h.navPolygons[0].map(plainPoint)})),walls:wallObstacles.get(def.id).map(line=>line.map(plainPoint)),doors:endpoints.filter(n=>n.floor===def.id&&n.type==='door').map(n=>({hall:n.hall,line:n.line.map(plainPoint)}))})),connectors:connectorPairs.map(c=>({type:c.type,lower:plainEndpoint(c.lower),upper:plainEndpoint(c.upper)}))}}
+    function navigationData(){return{floors:FLOOR_DEFS.map(def=>({id:def.id,rooms:[...endpoints.filter(n=>n.floor===def.id&&n.navigationPolygon).map(n=>({id:n.id,hall:n.hall,poly:n.navigationPolygon.map(plainPoint)})),...shopRegions.filter(r=>r.floor===def.id).map(r=>({id:r.id,hall:'road',poly:r.poly.map(plainPoint)}))],ground:walkableByFloor.get(def.id).ground.map(poly=>poly.map(plainPoint)),blocked:walkableByFloor.get(def.id).blocked.map(poly=>poly.map(plainPoint)),mid:halls.find(h=>h.floor===def.id&&h.id==='mid')?.navPolygons.map(poly=>poly.map(plainPoint))||[],halls:halls.filter(h=>h.floor===def.id&&h.id!=='mid').map(h=>({id:h.id,polygon:h.navPolygons[0].map(plainPoint)})),walls:wallObstacles.get(def.id).map(line=>line.map(plainPoint)),doors:endpoints.filter(n=>n.floor===def.id&&n.type==='door').map(n=>({hall:n.hall,line:n.line.map(plainPoint)}))})),connectors:connectorPairs.map(c=>({type:c.type,lower:plainEndpoint(c.lower),upper:plainEndpoint(c.upper)}))}}
     function disposeRoute(){routeGroup.traverse(object=>{object.geometry?.dispose();object.material?.dispose()});routeGroup.clear();delete routeGroup.userData.navigation;requestRender()}
     function cancelNavigation(){navigationSerial++;if(navigationPending){navigationWorker?.terminate();navigationWorker=null;navigationReady=false}navigationPending=false;document.querySelector('#routeButton').disabled=false;document.querySelector('#routeButton').textContent='开始导航';activeRoute=[];lastNavigationResult=null;disposeRoute()}
     function renderNavigation(result){
@@ -510,7 +569,7 @@
       halls.forEach(hall=>{hall.label.style.display="none";if((viewMode!=="ALL"&&hall.floor!==viewMode)||distance<size*.45)return;const {anchor,p,x,y}=project(hall.center.clone().add(new THREE.Vector3(0,4,0)),hall.floor),w=hall.id==="mid"?100:66,h=30;if(p.z<=-1||p.z>=1||x<w/2||x>rect.width-w/2||y<20||y>rect.height-20||overlaps(x,y,w,h)||occluded(anchor,hall.floor))return;hall.label.style.display="block";hall.label.style.left=x+"px";hall.label.style.top=y+"px";occupied.push({x,y,w,h})});
       FLOOR_DEFS.forEach(def=>{const group=floorGroups.get(def.id);if(!group)return;if(viewMode!=="ALL"&&def.id!==viewMode){group.userData.badge.style.display="none";return}group.userData.badge.style.display="block";const p=displayedPosition(group.userData.badgePosition,def.id).project(camera),x=(p.x*.5+.5)*rect.width,y=(-p.y*.5+.5)*rect.height;group.userData.badge.style.left=x+"px";group.userData.badge.style.top=y+"px"});
       const priority={accessible:9,elevator:8,door:7,escalator:6,stairs:5,male:4,female:4},candidates=[];
-      endpoints.forEach(node=>{node.element.style.display="none";if(node.type==='booth')return;if(viewMode!=="ALL"&&node.floor!==viewMode)return;const hall=halls.find(h=>h.floor===node.floor&&h.id===node.hall);if(!hall?.detailed)return;
+      endpoints.forEach(node=>{node.element.style.display="none";if(node.type==='booth')return;if(viewMode!=="ALL"&&node.floor!==viewMode)return;const hall=halls.find(h=>h.floor===node.floor&&h.id===(node.displayHall||node.hall));if(hall?!hall.detailed:!floorGroups.get(node.floor).userData.publicDetailed)return;
         const height=node.type==="elevator"?3.1:CONNECTORS.has(node.type)?1.45:node.type==="door"?2.7:.45;
         const {anchor,p,x,y}=project(node.position.clone().setY(height),node.floor),near=camera.position.distanceTo(anchor),important=node===selectedDestination||node.id===startSelect.value;
         if(p.z<=-1||p.z>=1||x<22||x>rect.width-22||y<22||y>rect.height-22)return;
@@ -525,11 +584,15 @@
         const projected=booth.polygon.map(v=>project(v.clone().setY(1.6),'F1')),w=(Math.max(...projected.map(v=>v.x))-Math.min(...projected.map(v=>v.x)))*.80,h=Math.max(...projected.map(v=>v.y))-Math.min(...projected.map(v=>v.y)),font=Math.min(14,Math.floor(w/(booth.shortName.length+.6)),Math.floor(h/2.8));
         if(font<9||overlaps(x,y,Math.min(w,font*6),font*2.6))continue;const el=booth.element;el.style.display='block';el.style.left=x+'px';el.style.top=y+'px';el.style.width=w+'px';el.style.fontSize=font+'px';occupied.push({x,y,w:Math.min(w,font*6),h:font*2.6});
       }
-      canvas.dataset.diagnostics=JSON.stringify({view:viewMode,distance:Math.round(distance),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,icons:markerCount,detailAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&h.detailed).length,coverAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&!h.detailed).length,floors:floorModels.map(g=>({floor:g.userData.floor,y:g.position.y,visible:g.visible})),hallCount:halls.filter(h=>h.id!=="mid").length,facilityCount:endpoints.length});
+      canvas.dataset.diagnostics=JSON.stringify({view:viewMode,distance:Math.round(distance),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,icons:markerCount,detailAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&h.detailed).length,coverAreas:halls.filter(h=>(viewMode==="ALL"||h.floor===viewMode)&&!h.detailed).length,floors:floorModels.map(g=>({floor:g.userData.floor,y:g.position.y,visible:g.visible})),hallCount:halls.filter(h=>h.id!=="mid").length,shopCount:shopRegions.length,facilityCount:endpoints.length});
       if(target.distanceToSquared(desiredTarget)>.001||Math.abs(distance-desiredDistance)>.02)requestRender();
     }
-    window.venueDiagnostics={renderer,scene,camera,halls,endpoints,floorGroups,standard:MODEL_STANDARD,navigationData,get navigation(){return lastNavigationResult},get view(){return viewMode},get distance(){return distance},setView:setViewMode,focus:focusHall,zoom(value){desiredDistance=value;requestRender()},render:requestRender};
-    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.filter(h=>h.id!=="mid").length} 个展馆、2 个中央商务区、${endpoints.length-booths.length} 个设施、${booths.length} 个展位`;requestRender();
+    addEventListener("necc:show-booth",event=>showEndpoint(event.detail?.boothId));
+    addEventListener("necc:show-destination",event=>showEndpoint(event.detail?.endpointId));
+    addEventListener("necc:navigate",event=>navigateEndpoint(event.detail?.endpointId||event.detail?.boothId));
+    window.venueNavigation={findFacilities,showEndpoint,navigateEndpoint,getCurrentStart(){const node=endpoints.find(item=>item.id===startSelect.value);return node?{id:node.id,label:node.label,floor:node.floor,hall:node.hall}:null}};
+    window.venueDiagnostics={renderer,scene,camera,halls,endpoints,booths,floorGroups,shopRegions,standard:MODEL_STANDARD,navigationData,get navigation(){return lastNavigationResult},get view(){return viewMode},get distance(){return distance},setView:setViewMode,focus:focusHall,zoom(value){desiredDistance=value;requestRender()},render:requestRender};
+    addEventListener("resize",resize);setViewMode(viewMode,{updateUrl:false});resize();loading.classList.add("hidden");status.textContent=`已识别 ${halls.filter(h=>h.id!=="mid").length} 个展馆、${shopRegions.length} 个 Shop 区、2 个中央商务区、${endpoints.length-booths.length} 个设施、${booths.length} 个展位`;requestRender();
   }
   start().catch(error=>{console.error(error);loading.textContent=error.message;status.textContent="多层地图生成失败"});
 })();

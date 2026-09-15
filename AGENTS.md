@@ -10,6 +10,8 @@ Read `MODEL_GENERATION_STANDARD_V2_DRAFT.md` before modifying any geometry, came
 
 Read `MODEL_UPDATE_20260907.md` as the latest user-authorized override for SVG sources, exact facility footprints, automatic all-hall LOD, icon density and exploded display spacing.
 
+Read `MODEL_UPDATE_20260911.md` before changing Shop annexes, public escalators, their navigation endpoints, the 20260911 SVG sources, or the NH editor orientation.
+
 Read `NAVIGATION_RULES_20260907.md` before routing changes. Current routing uses `navigation-engine.js` in `navigation-worker.js`: hall → public road → hall only; no third-hall or Mid shortcuts, including cross-floor legs. Keep final geometry audit and cancellation safeguards.
 
 Key invariants:

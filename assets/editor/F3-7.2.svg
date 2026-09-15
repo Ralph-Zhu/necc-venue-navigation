@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="5248 4211 2833 1322" width="2833" height="1322"><style>path[id^="FLOOR"]{fill:#f8fafb}path[id^="WALL"],g[id^="WALL"] path{fill:none;stroke:#697c88;stroke-width:2.6}line[id*="DOOR"]{stroke:#139d91}</style><g transform="matrix(1 0 0 1 0 0)"><g xmlns="http://www.w3.org/2000/svg" id="7.2">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5248 4237 2828 1296" width="2828" height="1296"><style>path[id^="FLOOR"]{fill:#f8fafb}path[id^="WALL"],g[id^="WALL"] path{fill:none;stroke:#697c88;stroke-width:2.6}line[id*="DOOR"]{stroke:#139d91}</style><g transform="matrix(1 0 0 1 0 0)"><g xmlns="http://www.w3.org/2000/svg" id="7.2">
 <path id="FLOOR__F3__H7.2_2" d="M5278 4369.5L7975 4369.1L7975 5431L5824 5431L5735.5 5342.5L5735.5 5258.5L5639.5 5258.5L5458 5077L5458 4891L5278 4891L5278 4369.5Z" fill="#CA0808" fill-opacity="0.2"/>
 <g id="DOOR__F3__H7.2_2">
 <line id=" DOORS__F3__H7.2__01å·å‡ºå…¥å£_3" x1="5452" y1="4368.5" x2="5286" y2="4368.5" stroke="#00D0EB" stroke-width="5"/>
@@ -125,5 +125,6 @@
 <path id="WALLS__F3__H7.2_02_3" d="M7599 5431L7569 5431M7569 5431L7510 5431M7569 5431L7569 5456.25M7569 5456.25L7569 5481.5L7510 5481.5L7510 5503L7608 5503M7569 5456.25L7599 5456.25M7734 5503L7691.84 5503M7691.84 5503L7691.84 5431M7691.84 5503L7608 5503M7608 5503L7608 5473" stroke="black" stroke-width="4"/>
 <path id="WALLS__F3__H7.2_01_3" d="M6697 5431L6667 5431M6667 5431L6608 5431M6667 5431L6667 5456.25M6667 5456.25L6667 5481.5L6608 5481.5L6608 5503L6706 5503M6667 5456.25L6697 5456.25M6832 5503L6789.84 5503M6789.84 5503L6789.84 5431M6789.84 5503L6706 5503M6706 5503L6706 5473" stroke="black" stroke-width="4"/>
 </g>
+
 
 </g></g></svg>

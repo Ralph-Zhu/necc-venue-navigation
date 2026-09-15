@@ -1,10 +1,12 @@
 # 国家会展中心场馆编辑器原型
 
-## 当前版本（2026-09-07）
+## 当前版本（2026-09-14）
 
 当前入口是 `campus-all.html`：F1/F3 两层，每层 8 馆及中央商务区，SVG 来源为 `assets/figma-f1-20260907.svg` 与 `assets/figma-f3-20260907.svg`。
 
-启动：`node tools/static-server.js`，浏览器访问 `http://127.0.0.1:8765/campus-all.html`。使用 HTTP 服务加载，不直接双击地图页面。
+启动：复制 `.env.example` 为 `.env`，填写自己的 DeepSeek API Key，然后运行 `node server/index.js`。浏览器访问 `http://127.0.0.1:8765/campus-all.html`。不要直接双击地图页面，也不要再使用旧的纯静态服务启动 AI 版本。
+
+AI 助手的完整配置、验证与正式部署要求见 `AI_DEPLOYMENT.md`。API Key 仅保存在本机的 `.env` 中，该文件已被 Git 忽略；没有配置 Key 时，页面会自动进入本地关键词推荐演示模式。
 
 制作约束先读 `AGENTS.md`，再读 `MODEL_GENERATION_STANDARD_V2_DRAFT.md` 与最新覆盖规则 `MODEL_UPDATE_20260907.md`。跨设备继续见 `MAC_SETUP.md`。
 
@@ -33,6 +35,7 @@
 - 固定设施点和本层独立道路
 - 从主入口到选中展位的路线演示
 - 渐变主题和手机端布局
+- AI 观展需求输入、候选展商推荐卡片及一键接入现有导航
 
 ## 当前数据边界
 
